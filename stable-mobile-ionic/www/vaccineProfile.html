@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<script type="text/javascript" src="Scripts/angular.min.js"></script>
+<script type="text/javascript" src="Scripts/app.js"></script>
+    <!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+<head>
+    <style type="text/css">
+        body {
+            background: rgb(210, 77, 87) !important;
+        }
+    </style>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>Vaccine Profile</title>
+</head>
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+
+<i><span style="margin-left: 10px; color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px;">STABLE</span></i>
+
+<button type="button" ng-controller="VaccineProfileController" ng-click="removeVaccine()"
+        class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:2%;">
+    Remove Vaccine
+</button>
+
+<div ng-controller="VaccineProfileController" style="text-align: center;">
+
+    <span style="color: #ffffff; font-family: calibri,serif; "><h3><b>{{params.name}}</b></h3></span>
+    <table style="width:100%">
+        <tr>
+            <td>
+                <img height="200" width="200" src="http://images.clipartpanda.com/syringe-clipart-9cRLkrgce.png">
+            </td>
+            <td style="background-color: #FFFFFF; border-width: 1px; border-style: solid; border-color: black;">
+                <p style="color: black"><b>Vaccine Name: </b>{{params.name}}</p>
+                <p style="color: black"><b>Seller/Retailer: </b>{{params.seller}}</p>
+                <p style="color: black"><b>Price per Dosage: </b>{{params.price | currency : $ : 2}} <b></b></p>
+                <p style="color: black"><b>Instructions: </b><pre>{{params.instruction}}</pre></p>
+                <p style="color: black"><b>Description/Notes: </b><pre>{{params.description}}</pre></p>
+
+            </td>
+            <td>
+                <img height="200" width="200" src="http://images.clipartpanda.com/syringe-clipart-9cRLkrgce.png">
+            </td>
+
+        </tr>
+
+
+    </table><br>
+
+    <button type="button" class="btn btn-primary" ng-click="edit()">Edit Info</button>
+
+    <button type="button" class="btn btn-primary" ng-click="toDatabase()">All Vaccines</button>
+
+    <button type="button" class="btn btn-primary" ng-click="mainPage()">Main Page</button>
+
+    <button type="button" class="btn btn-primary" onclick="history.go(-1);return true;">Back</button>
+
+</div>
+
+
+</body>
+</html>

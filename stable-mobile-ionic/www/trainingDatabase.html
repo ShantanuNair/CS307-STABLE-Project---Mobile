@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>STABLE ::: TRAINING_DB</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+</head>
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+<div class="panel panel-primary" ng-controller="TrainingCtrl">
+    <div class="panel-heading" style="font-size:large">
+        Training Regimens
+    </div>
+
+    
+    <div class="panel panel-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>Location</td>
+                <td>Food</td>
+                <td>Exercise</td>
+                <td>Equipment</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="regime in regimens">
+                <td>{{ regime.name}}</td>
+                <td><pre>{{ regime.location}}</pre></td>
+                <td><pre>{{ regime.food}}</pre></td>
+                <td><pre>{{ regime.exercise}}</pre></td>
+                <td><pre>{{ regime.equipment}}</pre></td>
+                <td>
+                    <button class="btn btn-primary" ng-click="edit(regime.name)" >Edit</button>&nbsp;
+                    <button class="btn btn-danger" ng-click="removeRegime(regime)">Delete</button>
+                    <button class="btn btn-primary" ng-click="goToRegimeProfile(regime.name)">Regime Profile</button>
+                    <button class="btn btn-primary" ng-click="addToQueue(regime.name)" >Add To Export Queue</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-success" ng-click="addForm()">New Training Regime</button>
+    </div>
+</div>
+</body>
+    <button ng-controller="TrainingCtrl" class="btn btn-primary" type="button" ng-click="back()">Back</button>
+</html>

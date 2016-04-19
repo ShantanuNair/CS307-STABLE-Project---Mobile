@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="Scripts/angular.min.js"></script>
+
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<head>
+    <style type="text/css">
+        body {
+            background: rgb(210, 77, 87) !important;
+        }
+    </style>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>Training Profile</title>
+</head>
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+
+<i><span style="margin-left: 10px; color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px;">STABLE</span></i>
+
+<button type="button" ng-controller="RegimeController" ng-click="removeRegime()"
+        class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:2%;">
+    Remove Program
+</button>
+
+
+<div ng-controller="RegimeController" style="text-align: center;">
+
+    <span style="color: #ffffff; font-family: calibri,serif; "><h3><b>{{params.name}}</b></h3></span>
+    <table style="width:100%">
+        <tr>
+            <td>
+                <img height="200" width="200" src="http://www.svsd.net/cms/lib5/PA01001234/Centricity/Domain/1459/Clipboard%20Clipart.gif">
+            </td>
+            <td style="background-color: #FFFFFF; border-width: 1px; border-style: solid; border-color: black;">
+
+                <p style="color: black"><b>Program Name: </b><pre>{{params.name}}</pre></p>
+                <p style="color: black"><b>Training Location: </b><pre>{{params.location}}</pre></p>
+                <p style="color: black"><b>Diet Information: </b><pre>{{params.food}}</pre></p>
+                <p style="color: black"><b>Exercise Information: </b><pre>{{params.exercise}}</pre></p>
+                <p style="color: black"><b>Necessary Equipment: </b><pre>{{params.equipment}}</pre></p>
+
+            </td>
+            <td>
+                <img height="200" width="200" src="http://www.svsd.net/cms/lib5/PA01001234/Centricity/Domain/1459/Clipboard%20Clipart.gif">
+            </td>
+
+        </tr>
+
+
+    </table><br>
+
+    <button type="button" class="btn btn-primary" onclick="location.href = '/editTraining.html'">Edit Info</button>
+
+    <button type="button" class="btn btn-primary" onclick="location.href = '/trainingDatabase.html'">All Regimens</button>
+
+    <button type="button" class="btn btn-primary" onclick="location.href = '/MainPage.html'">Main Page</button>
+
+    <button type="button" class="btn btn-primary" onclick="history.go(-1);return true;">Back</button>
+
+</div>
+
+</body>
+</html>
