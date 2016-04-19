@@ -1,0 +1,55 @@
+<!doctype html>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<html>
+
+<head>
+    <title>Training Form</title>
+</head>
+
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+
+<i><span style="font-family: Segoe UI Black,serif; font-size: 50px;">STABLE</span></i>
+
+<div ng-controller="trainingEditController" style="text-align: center;">
+    <form ng-submit="createRegimen()" name="trainingForm" novalidate>
+        <span style="color: #ffffff; font-family: calibri,serif; "><h3><b>Enter Training Information:<br></b></h3></span>
+        
+        <span style="color: #ffffff; font-family: calibri,serif; ">Program Name:</span><br>
+        <input id="trainingName" name="trainingName" type="text" placeholder="Name" ng-model="trainingName" disabled>
+
+		<br><br>
+
+        <span style="color: #ffffff; font-family: calibri,serif; ">Program Exercise:</span><br>
+        <textarea id="trainingExercise" rows="5" cols="50" name="trainingExercise" type="text" placeholder="Exercise" ng-model="trainingExercise" required></textarea>
+		<br><br>
+        
+        <span style="color: #ffffff; font-family: calibri,serif; ">Program Food:</span><br>
+        <textarea id="trainingFood" rows="5" cols="50" name="trainingFood" type="text" placeholder="Food" ng-model="trainingFood" required></textarea>
+		<br><br>
+
+        <span style="color: #ffffff; font-family: calibri,serif; ">Program Location:</span><br>
+        <textarea id="trainingLocation" name="trainingLocation" cols="50" type="text" placeholder="Location" ng-model="trainingLocation" required></textarea>
+		<br><br>
+
+        <span style="color: #ffffff; font-family: calibri,serif; ">Program Equipment:</span><br>
+        <textarea id="trainingEquipment" rows="5" cols="50" name="trainingEquipment" type="text" placeholder="Equipment" ng-model="trainingEquipment" required></textarea>
+		<br><br>
+
+        <button type="button" onclick="history.go(-1);return true;">Back</button>
+
+        <button name="submitButton" ng-click="clicked = 1" type="submit">Submit</button>
+        <br><br>
+
+    </form>
+</div>
+
+</body>
+</html>

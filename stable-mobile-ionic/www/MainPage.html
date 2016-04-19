@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<!--- may need these scripts
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.1/ui-bootstrap-tpls.js"></script>
+--->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<html lang="en">
+<head>
+                      <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
+
+                      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
+
+                  <style type="text/css">
+                    @import url('http://getbootstrap.com/dist/css/bootstrap.css');
+                  </style>
+
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <style type="text/css">
+        body {
+            background: rgb(210, 77, 87) !important;
+        }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <script src="lib/ionic/js/ionic.bundle.js"></script>   
+    <script src="cordova.js"></script>
+    
+    <style>
+        nav {
+            color: black;
+            font-family: "Calibri", serif;
+            font-weight: normal;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 10px;
+        }
+
+        .tall-btn {
+            height: 100px;
+            text-align: center;
+
+        }
+
+        button.ex1:hover, button.ex1:active, button.ex1:focus {
+            background: rgb(51, 122, 183) !important;
+            border-width: 0 !important;
+            cursor: default;
+            background-image: none !important;
+            outline: 0 !important;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+
+        .btn-border {
+            text-align: center;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #000000;
+            padding: 10px;
+        }
+
+        input.search-query {
+            color: black;
+        }
+        
+        .input{
+            width:95%;
+            outline:none;
+            display:block;
+            box-sizing: border-box;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 50%;
+        }
+
+        section {
+            width: 50%;
+            float: left;
+            padding: 10px;
+        }
+
+        aside {
+            width: 50%;
+            float: right;
+            padding: 10px;
+        }
+
+        footer {
+            background-color: #D24D57;
+            color: white;
+            clear: both;
+            text-align: center;
+            padding: 5px;
+        }
+        
+        span.ex2:hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .suggestions-list {
+            width:48%;
+            position:absolute;
+            list-style-type: none;
+            margin: 0 0 0 0px;
+            padding-left: 0px;
+            overflow: auto;
+            overflow-x: hidden;
+            word-wrap: break-word;
+        }
+
+        .suggestions-list li {
+            color: #000000;
+            float:inherit;
+            margin:inherit;
+            width:inherit;
+            padding:inherit;
+            cursor: pointer;
+            background: #FFFFFF;
+            border-bottom: 1px solid #eeeeee;
+            word-wrap: break-word;
+        }
+        
+        .suggestions-list li:hover {
+            background: #0099FF;
+        }
+        
+        .suggestions-list li:active,
+        .suggestions-list li.active {
+            color: #000000;
+            background: #0099FF;
+        }
+        
+        .suggestions-list:focus{
+            outline:none;
+        }
+        
+    </style>
+</head>
+
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+<i><span
+        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
+
+
+<button ng-controller="MainPageController" type="button" class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:1%;" ng-click='logout()'>
+    Log Out
+</button>
+
+<div ng-controller="MainPageController" style="text-align: center;">
+
+    <span style="color: #ffffff; font-family: calibri,serif; "><h3><b>Welcome! Today is {{date | date : 'mediumDate'}}<br></b>
+    </h3></span>
+    <nav>
+        <table style="width:100%; padding: 10px;">
+            <tr>
+                <td>
+                    <button style="padding: 14px 40px;" type="button"
+                            onclick="location.href='/horseDatabase.html'"
+                            class="btn btn-default btn-lg btn-border">Horses
+                    </button>
+                </td>
+                <td>
+                    <button style="padding: 14px 40px;" type="button"
+                            onclick="location.href='/vaccineDatabase.html'"
+                            class="btn btn-default btn-lg btn-border">Vaccines
+                    </button>
+                </td>
+                <td>
+                    <button style="padding: 14px 40px;" type="button"
+                            onclick="location.href='/trainingDatabase.html'"
+                            class="btn btn-default btn-lg btn-border">Training
+                    </button>
+                </td>
+                <td>
+                    <button style="padding: 14px 40px;" type="button" onclick="location.href='/CalendarPage.html'" class="btn btn-default btn-lg btn-border">Calendar
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </nav>
+    <br>
+
+    <table style="width:100%">
+        <tr>
+            <td>
+                <span class="ex2" onclick="location.href='/CalendarPage.html'" style="font-size: x-large; color: #ffffff; font-family: calibri,serif; "><b>Reminders:</b></span> 
+                <div id="authorize-div" style="display: none">
+                        <span style="color: #ffffff">Authorize access to Google Calendar API</span>
+                            <!--Button for the user to click to initiate auth sequence -->
+                            <button class="btn btn-primary" id="authorize-button" onclick="handleAuthClick(event)">
+                            Authorize
+                            </button>
+                    </div>
+                            
+                        <pre style="color: #ffffff; background: rgb(210, 77, 87); border: none; font-family: Calibri, serif; font-size: large;" width="95%" style="text-align: center;" id="output"></pre>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/CalendarPage.html'">View
+                    All
+                </button>
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+    <section>
+        
+        <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
+                ng-click='newHorse()'>New Horse&nbsp&nbsp&nbsp
+            <img height="85" width="100" src="http://images.clipartpanda.com/clipart-horse-horse5.png">
+        </button>
+        
+        
+              <button type="button" class="btn tall-btn btn-primary btn-lg btn-block" ng-click='toggleSearch()' ng-hide='searchOn'>Search&nbsp&nbsp&nbsp
+            <img height="85" width="100" src="http://icons.iconarchive.com/icons/hopstarter/scrap/48/Magnifying-Glass-icon.png">
+        </button>
+        <form ng-show='searchOn'>
+            <table style='width:100%;'>
+            <td>
+            <div style="font-size: x-large; color: #ffffff; font-family: calibri,serif;">
+            <input type="radio" name="searchCategory" value="s_horse" checked> Horse
+            <input type="radio" name="searchCategory" value="s_vaccine"> Vaccine
+            <input type="radio" name="searchCategory" value="s_training"> Training
+            <div><input type="text" placeholder="Search for items" class="input" ng-keydown="checkKeyDown($event)" ng-keyup="checkKeyUp($event)" ng-model="searchText" ng-change="search()" style="color:black;" name="horseSearch" autocomplete="off"/></div>
+            <div>
+                <ul class="suggestions-list" ng-show="searchText.length">
+                    <li ng-repeat="suggestion in searchCategory | filter:searchText | limitTo:5" ng-class="{active : selectedIndex === $index}" ng-click="AssignValueAndHide(suggestion.name)">{{suggestion.name}}</li>
+                </ul>
+            </div>    
+            </div>
+            </td>
+                
+            <td>
+            <div class="btn-group-vertical btn-block">
+                <button type='submit' class='btn btn-primary btn-lg' style="margin-top:5px;" ng-click="toWindowForSearch(searchText)">View Profile
+                </button>
+                <button ng-click='toggleSearch()' class='btn btn-primary btn-lg' style="margin-top:5px;">Cancel  
+                </button>
+            </div>
+            </td>
+            </table>
+          </form>
+        <!---
+        <button type="button" class="ex1 btn tall-btn btn-primary btn-lg btn-block" ng-click='toHorse(horse.name)'>Search Horses:&nbsp&nbsp
+
+            <input name="horseSearch" type="text" class="search-query" placeholder="Type Horse Name"
+            ng-model="horseSearch"\>
+        
+        
+        </button>---> <!--- ng-click='toWindow("/horseProfile.html")' --->
+        
+        
+        <!---
+        <table>
+        <select style="width:100%" ng-show="horseSearch.length" ng-model="horseResult">
+            <option ng-repeat="horse in horses | filter:horseSearch | orderBy:'name' | limitTo:5" type="button" style="margin-left:5px;margin-right:5px;padding-left:5px;padding-right:5px;">{{horse.name}}
+            </option>
+        </select>
+        </table>
+        --->
+        
+        
+    </section>
+
+    <aside>
+        
+        <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
+            ng-click='newVaccine()'>New Vaccine&nbsp
+            <img height="85" width="85" src="http://images.clipartpanda.com/syringe-clipart-9cRLkrgce.png">
+        </button>
+
+        <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
+            ng-click='newTraining()'>
+            New Training&nbsp&nbsp&nbsp
+            <img height="85" width="85" src="http://www.svsd.net/cms/lib5/PA01001234/Centricity/Domain/1459/Clipboard%20Clipart.gif">
+        </button>
+    </aside>
+    <div ng-controller="fileUploadController">
+        <input id="myInput" onchange="angular.element(this).scope().generateReport(event)" type="file" style="visibility:hidden" />
+        <button type="button" class="btn btn-primary btn-lg"  onclick="$('#myInput').click();" id="file_select" name="file_select" >Import</button>
+        <button type="button" class="btn btn-primary btn-lg" ng-click="download();">Export</button>
+        <button type="button" class="btn btn-primary btn-lg" ng-click="wipe();">Clear Export Queue</button>
+    </div>
+    
+    <footer>
+        Copyright © STABLE Horse Breeding Software
+    </footer>
+
+
+</div>
+<script type="text/javascript">
+              // Your Client ID can be retrieved from your project in the Google
+              // Developer Console, https://console.developers.google.com
+              var CLIENT_ID = '902845324301-8usn9th82avpblfb4qj3a2mq3ojqokdr.apps.googleusercontent.com';
+
+              var SCOPES = ["https://www.googleapis.com/auth/calendar"];
+
+              /**
+               * Check if current user has authorized this application.
+               */
+              function checkAuth() {
+                gapi.auth.authorize(
+                  {
+                    'client_id': CLIENT_ID,
+                    'scope': SCOPES.join(' '),
+                    'immediate': true
+                  }, handleAuthResult);
+              }
+
+              /**
+               * Handle response from authorization server.
+               *
+               * @param {Object} authResult Authorization result.
+               */
+              function handleAuthResult(authResult) {
+                var authorizeDiv = document.getElementById('authorize-div');
+                if (authResult && !authResult.error) {
+                  // Hide auth UI, then load client library.
+                  authorizeDiv.style.display = 'none';
+                  loadCalendarApi();
+                } else {
+                  // Show auth UI, allowing the user to initiate authorization by
+                  // clicking authorize button.
+                  authorizeDiv.style.display = 'inline';
+                }
+              }
+
+              /**
+               * Initiate auth flow in response to user clicking authorize button.
+               *
+               * @param {Event} event Button click event.
+               */
+              function handleAuthClick(event) {
+                gapi.auth.authorize(
+                  {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+                  handleAuthResult);
+                return false;
+              }
+
+              /**
+               * Load Google Calendar client library. List upcoming events
+               * once client library is loaded.
+               */
+              function loadCalendarApi() {
+                gapi.client.load('calendar', 'v3', listUpcomingEvents);
+              }
+
+              /**
+               * Print the summary and start datetime/date of the next ten events in
+               * the authorized user's calendar. If no events are found an
+               * appropriate message is printed.
+               */
+              function listUpcomingEvents() {
+                var request = gapi.client.calendar.events.list({
+                  'calendarId': 'primary',
+                  'timeMin': (new Date()).toISOString(),
+                  'showDeleted': false,
+                  'singleEvents': true,
+                  'maxResults': 3,
+                  'orderBy': 'startTime'
+                });
+
+                request.execute(function(resp) {
+                  var events = resp.items;
+
+                  if (events.length > 0) {
+                    for (i = 0; i < events.length; i++) {
+                      var event = events[i];
+                      var when = new Date( event.start.dateTime );
+                      if (!when) {
+                        when = new Date( event.start.date );
+                      }
+                      var day = when.getDay();
+                      if (when.getDate() == new Date().getDate()) {
+                          day = "Today";
+                      } else if (when.getDate() == new Date().getDate()+1) {
+                          day = "Tomorrow";
+                      } else if (day == 1) {
+                          day = "Monday";
+                      } else if (day == 2) {
+                          day = "Tuesday";
+                      } else if (day == 3) {
+                          day = "Wednesday";
+                      } else if (day == 4) {
+                          day = "Thursday";
+                      } else if (day == 5) {
+                          day = "Friday";
+                      } else if (day == 6) {
+                          day = "Saturday";
+                      } else if (day == 0) {
+                          day = "Sunday";
+                      }
+                      when = timeStamp(when);
+                      if (!event.description) {
+                          var description = "";
+                          appendPre(day + ' ' + when + ': ' + event.summary);
+                      } else {
+                          var description = event.description;
+                          appendPre(day + ' ' + when + ': ' + event.summary + ' [Reason: ' + description + ']');
+                      }
+                    }
+                  } else {
+                    appendPre('No upcoming events found.');
+                  }
+
+                });
+              }
+
+                function timeStamp(when) {
+                // Create a date object with the current time
+                  var now = when;
+
+                // Create an array with the current month, day and time
+                  var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+
+                // Create an array with the current hour, minute and second
+                  var time = [ now.getHours(), now.getMinutes() ];
+
+                // Determine AM or PM suffix based on the hour
+                  var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+
+                // Convert hour from military time
+                  time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+
+                // If hour is 0, set it to 12
+                  time[0] = time[0] || 12;
+
+                // If seconds and minutes are less than 10, add a zero
+                  for ( var i = 1; i < 3; i++ ) {
+                    if ( time[i] < 10 ) {
+                      time[i] = "0" + time[i];
+                    }
+                  }
+
+                // Return the formatted string
+                  return time.join(":") + suffix + ' ' + date.join("/");
+                }
+                        
+              /**
+               * Append a pre element to the body containing the given message
+               * as its text node.
+               *
+               * @param {string} message Text to be placed in pre element.
+               */
+              function appendPre(message) {
+                  var pre = document.getElementById("output");
+                var textContent = document.createTextNode(message + '\n');
+                pre.appendChild(textContent);
+              }
+
+            </script>
+            <script src="https://apis.google.com/js/client.js?onload=checkAuth">
+            </script>
+</body>
+</html>

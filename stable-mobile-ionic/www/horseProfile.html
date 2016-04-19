@@ -1,0 +1,136 @@
+<!doctype html>
+<html id="all">
+<script type="text/javascript" src="Scripts/angular.min.js"></script>
+
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<head>
+    <style type="text/css">
+        body {
+            background: rgb(210, 77, 87) !important;
+        }
+    </style>
+    <link href="./css/horseForm.css" rel="stylesheet">  
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>Horse Profile</title>
+</head>
+
+<body id="all" ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+<i><span style="margin-left: 10px; color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px;">STABLE</span></i>
+
+<button type="button" ng-controller="HorseController" ng-click="removeHorse()"
+        class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:2%;">
+    Remove Horse</button>
+    <div id="information" ng-controller="HorseController" style="font-size: 18px; font-family: Calibri,serif; text-align: center;">
+
+    
+<section>
+    <br>
+    <br>
+    <br>
+    <br>
+  <code>
+      <button id="modalButton" class="btn btn-primary btn-lg" ng-controller = "HorseController" ng-click="openModal()">Show Vaccine Information</button><br><br>
+       <button id="modalTrainingButton" class="btn btn-primary btn-lg" ng-controller = "horseDataController" ng-click="openTrainingModal()">Show Training Programs</button>
+     <div id="vaccineModal" class="modal" ng-controller = "HorseController">
+        <div id="vaccineModalInterior" class="modal-content">
+            <i><span style="font-family: Segoe UI Black,serif; font-size: 15px;">VACCINES</span></i>
+                                  
+            <table class="table" border=1 frame=void rules=rows>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vaccine in vaccines">
+                    <td>{{ vaccine.name}}</td>
+                    <td><pre>{{ vaccine.description}}</pre></td>
+                    <td>
+                        <button class="btn btn-primary" ng-click="goToVaccine(vaccine.name)">Go To Profile</button>
+                    </td><hr>
+                </tr>
+                </tbody>
+            </table>
+            <button id="closeModal" class="btn btn-primary btn-lg" style="left:50%" ng-click="closeModal()">Close</button>
+        </div>
+    </div>
+       <div id="trainingModal" class="modal-training" ng-controller = "HorseController">
+        <div id="trainingModalInterior" class="modal-content">
+            <i><span style="font-family: Segoe UI Black,serif; font-size: 15px;">TRAINING PROGRAMS</span></i>
+            <table class="table" border=1 frame=void rules=rows>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Exercise</th>
+                    <th>Equipment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="regime in regimens">
+                    <td>{{regime.name}}</td>
+                    <td><pre>{{regime.exercise}}</pre></td>
+                    <td><pre>{{regime.equipment}}</pre></td>
+                    <td>
+                        <button class="btn btn-primary" ng-click="goToRegime(regime.name)">Go To Profile</button>                    
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button id="closeTrainingModal" class="btn btn-primary btn-lg" style="left:50%" ng-click="closeTrainingModal()">Close</button>
+        </div>
+    </div>
+  </code>
+</section>    
+    
+<section id="all">
+
+    <span id="all" style="color: #ffffff; font-family: calibri,serif; "><h3><b>{{params.name}}'s Profile:</b></h3></span>
+    <table id="all" style="width:800px">
+        <tr>
+            <td id="all" style="background-color: #FFFFFF; border-width: 1px; border-style: solid; border-color: black;">
+                <p id="all" style="color: black"><b>Name: </b>{{params.name}}</p>
+                <p id="all" style="color: black"><b>Breed: </b>{{params.breed}}</p>
+                <p id="all" style="color: black"><b>Gender: </b>{{params.gender}}</p>
+                <p id="all" style="color: black"><b>Auction Price: </b>{{params.auctionPrice | currency : $ : 2}}<b id="all" ></b></p>
+                <p id="all" style="color: black"><b>Weight: </b>{{params.weight}}<b id="all" > lbs.</b></p>
+                <p id="all" style="color: black"><b>DOB: </b>{{params.dob}}<br> <i id="all">yyyy-mm-dd</i></p>
+                <p id="all" style="color: black"><b>Mare: </b>{{params.mare}}</p>
+                <p id="all" style="color: black"><b>Sire: </b>{{params.sire}}</p>
+                <button type="button" class="btn btn-primary btn-lg" ng-controller="HorseController" ng-click="openNotesModal()">View Notes</button>
+            </td>
+            <!---
+            <td id="all"><img id="all" height="200" width="200" src="http://www.zastavki.com/pictures/2560x1600/2011/Animals_Horses_Racehorse_029556_.jpg"></td>
+            --->
+            <td id="all"><img height="200" width="200" id="img"></td>
+    </tr>
+    </table>
+    <button type="button" style="position:absolute; left:35%;" class="btn btn-primary btn-lg" ng-controller="HorseController" ng-click="edit()">Edit Info</button>
+
+    <button type="button" style="position:absolute; left:45%;" class="btn btn-primary btn-lg" ng-controller="HorseController" ng-click="toDatabase()">All Horses</button>
+
+    <button type="button" style="position:absolute; left:56%;" class="btn btn-primary btn-lg" ng-controller="HorseController" ng-click="mainPage()">Main Page</button>
+    
+        <div id="notesModal" class="modal" ng-controller = "HorseController">
+        <div id="notesModalInterior" class="modal-content">
+            <i><span style="font-family: Segoe UI Black,serif; font-size: 15px;">NOTES</span></i><br><hr>
+            <span ><pre>{{params.notes}}</pre></span><br>
+            <button id="closeNotesModal" class="btn btn-primary btn-lg" style="left:50%" ng-click="closeNotesModal()">Close</button>
+        </div>
+    </div>
+    
+    
+
+</section>
+    </div>
+
+</body>
+</html>

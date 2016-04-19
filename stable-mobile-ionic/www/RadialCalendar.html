@@ -1,0 +1,927 @@
+                <!DOCTYPE html>
+
+                <script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"></script>
+
+                <html xmlns:xlink="http://www.w3.org/1999/xlink">
+                <head>
+                <style type="text/css">
+                        body {
+                            background: rgb(210, 77, 87) !important;
+                        }
+                        .WeekLine {
+                          pointer-events: none
+                        }
+                    </style>
+                    <style>
+                input:invalid {
+                    border: 1px solid red;
+                }
+                </style>
+                  <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
+
+                      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
+
+                  <style type="text/css">
+                    @import url('http://getbootstrap.com/dist/css/bootstrap.css');
+                  </style>
+
+                  <title>My Calendar</title>
+
+                </head>
+
+                <body>
+                    <script src="https://code.angularjs.org/1.4.9/angular.min.js"></script>
+                    <script src="https://rawgit.com/dwmkerr/angular-modal-service/master/dst/angular-modal-service.js"></script>
+
+                    <i><span
+                        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
+
+                    <div class="container" ng-app="app" ng-controller="Controller">
+
+                        <div style="text-align: center;">
+                    <span style="color: #ffffff; font-size: 18px; font-family: Calibri,serif; text-align: center;"><h3><b>My Calendar</b></h3></span>
+
+                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/MainPage.html'">Back</button>
+                    
+                    <button type="button" id="addEventButton" style="display: none" class="btn btn-primary btn-lg" href ng-click="show()">Add Event</button><br>
+                            
+                    <a style="color: white" href="/CalendarPage.html">View As Traditional Calendar</a><br><br>
+                    
+                    <form onsubmit="setDate()" style="display: none" id="formCalendar">
+                        <text style="color: white">Start Date: </text>
+                        <!-- <input type="date" id="dateSelect"> -->
+                        <input type="range" value="4" min="1" max="12" style="width=1px;" id="dateSelect" oninput="setDate()">
+                        <!-- <input type="submit"> -->
+                    </form>
+                    <script>
+                         function setDate() {
+                              var pref = document.getElementById("dateSelect");
+                            if (pref.value != "") {
+                                //console.log(pref.value + "/1/2016");
+                                var prefDate = new Date(pref.value + "/1/2016");
+                                var today = 0;
+                                var today2 = 0;
+                                var sameArray = [];
+                                var realArray = [];
+                                var prev = null;
+                                var curr = null;
+                                var startDate = new Date()
+                                    var w = 600, // Width of SVG.
+                                    h = 600, // Height of SVG.
+                                    r0 = 50, // Radius of inner circle.
+                                    r1 = Math.min(w, h) / 2, // Radius of outer circle.
+                                    r2=(r1-r0)/36, // Radius delta of days.
+                                    rl = 40*r2, // Radial distance of labels.
+                                    months = [ // Name array for month labels.
+                                     "Jan","Feb","Mar","Apr",
+                                     "May","Jun","Jul","Aug",
+                                     "Sep","Oct","Nov","Dec"
+                                    ],
+                                    dates=[]; // Array to hold 1 yr of dates.
+                                    var endDate = new Date(startDate); // End date, incremented later.
+                                    d3.select("svg").remove();
+                                      vis = d3.select("#test") // SVG area to send output to.
+                                      .append("svg:svg")
+                                      .attr("width", w)
+                                      .attr("height", h)
+                                ;
+                                // Calculate the end date.
+                                endDate.setFullYear(endDate.getFullYear()+1);
+                                endDate.setDate(endDate.getDate()-1);
+                                // Define the arc parameters for the individual days.
+                                var arc = d3.svg.arc()
+                                    .startAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                                    .endAngle(function(d) { return (d.getMonth()+1)*Math.PI/6; })
+                                    .innerRadius(function(d) { return r0+(d.getDate()-1)*r2; })
+                                    .outerRadius(function(d) { return r0+(d.getDate())*r2; })
+                                ;
+                                // Define the arc parameters for the thick start month indicator.
+                                var arc2 = d3.svg.arc()
+                                    .startAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                                    .endAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                                    .innerRadius(function(d) { return r0; })
+                                    .outerRadius(function(d) { return r0+(31*r2); })
+                                ;
+                                // Generate an array for each day of the year.
+                                for (
+                                    d = new Date(startDate);
+                                    d <= endDate;
+                                    d.setDate(d.getDate()+1)
+                                ) dates.push(new Date(d));
+                                var newD = new Date();
+                                var date4 = null;
+                                // Draw faint arcs for each day (events filled, else outlined).
+                                vis.selectAll("g.AllDays")
+                                    .data(dates)
+                                    .enter().append("svg:g")
+                                        .attr("class", "AllDays")
+                                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                                    .append("svg:path")
+                                        .attr("stroke", function(d, i) { return d3.hsl(0,0.25,0.75) })
+                                        .attr("fill", function(d, i) {
+                                            var result = "#ffffff";
+                                            for (j = 0; j < eventsG.length; j++) {
+                                                  var event = eventsG[j];
+                                                  var when = new Date( event.start.dateTime );
+                                                  if (!when) {
+                                                    when = new Date( event.start.date );
+                                                  }
+                                                  // date1=event date; date2=today; date3=current cell
+                                                  var date1 = (when.getMonth()+1) + "/" + (when.getDate()) + "/" + (when.getFullYear());
+                                                  var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+
+                                                curr = date1;
+
+                                                  if (date3 == date2 && date2 == date1) {
+                                                      today2 = 1;
+                                                  }
+                                                  if (date3 == date2) {
+                                                     result = "#000000";
+                                                  }
+                                                  else if (date1 == date3) {
+                                                      result = "#2ecc71";
+                                                  }
+                                                var t = 0;
+                                                var found = 0;
+                                                for (t=0; t < sameArray.length; t++) {
+                                                    if (sameArray[t] == curr) {
+                                                        found = 1;
+                                                    }
+                                                }
+                                                if (found == 0) {
+                                                    sameArray.push(curr);
+                                                    realArray.push(when);
+                                                }
+                                                prev = curr;
+                                            }
+                                            first = 0;
+                                            if (j == 0) {
+                                                var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                                if (date3 == date2) {
+                                                    result = "#000000";
+                                                    today = 1;
+                                                }
+                                            }
+                                            if (result == "#ffffff") {
+                                                if (d.getMonth()+1 >= prefDate.getMonth()+1 && d.getMonth()+1 <= prefDate.getMonth()+4) {
+                                                    result = "#fde3a7";
+                                                }
+                                                else if (d.getMonth()+1 >= prefDate.getMonth()+5 && d.getMonth()+1 <= prefDate.getMonth()+8) {
+                                                    result = "#c5eff7";
+                                                }
+                                                else if (d.getMonth()+1 >= prefDate.getMonth()+9 && d.getMonth()+1 <= prefDate.getMonth()+12) {
+                                                    result = "#dcc6e0";
+                                                }
+                                                else if (d.getMonth()+1 >= prefDate.getMonth()-3 && d.getMonth()+1 <= prefDate.getMonth()) {
+                                                    result = "#dcc6e0";
+                                                }
+                                                else if (d.getMonth()+1 >= prefDate.getMonth()-7 && d.getMonth()+1 <= prefDate.getMonth()-4) {
+                                                    result = "#c5eff7";
+                                                }
+                                                else if (d.getMonth()+1 >= prefDate.getMonth()-11 && d.getMonth()+1 <= prefDate.getMonth()-8) {
+                                                    result = "#fde3a7";
+                                                }
+                                            }
+                                            return result;
+                                         })
+                                        .attr("d", arc)
+                                        .filter (function(d, i) {
+                                            var result = 0;
+                                            for (j = 0; j < eventsG.length; j++) {
+                                                  var event = eventsG[j];
+                                                  var when = new Date( event.start.dateTime );
+                                                  if (!when) {
+                                                    when = new Date( event.start.date );
+                                                  }
+                                                  var date1 = (when.getMonth()+1) + "/" + (when.getDate()) + "/" + (when.getFullYear());
+                                                  var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+
+                                                  if (date3 == date2) {
+                                                     result = 1;
+                                                      date4 = date3;
+                                                      break;
+                                                  }
+                                                  else if (date1 == date3) {
+                                                      result = 1;
+                                                      date4 = date3;
+                                                      break;
+                                                  }
+                                            }
+                                            if (j == 0) {
+                                                var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                                if (date3 == date2) {
+                                                    date4 = date3;
+                                                    result = 1;
+                                                }
+                                            }
+                                            return result;
+                                        })
+                                        .on("click", function(d, i) {
+                                            var link = "http://calendar.google.com";
+
+                                            var w = 0;
+
+                                            // if there are no events today but events after
+                                            // today == 0 and today2 == 0 when no event today but events after
+                                            // today == 0 and today2 == 1 when events today and after
+                                            // today == 0 and today2 == 1 when events today only
+                                            // today == 1 and today2 == 0 when no events
+                                            if (today == 0 && today2 == 1) {
+                                                i++;
+                                            }
+
+                                            if (i == 0) {
+                                                link = "https://calendar.google.com/calendar/render#main_7%7Cday";
+                                            }
+                                            else {
+                                                var when = realArray[i-1];
+                                                var year = when.getFullYear();
+                                                var month = when.getMonth()+1;
+                                                var day = when.getDate();
+                                                if (month.toString().length == 1) {
+                                                    month = "0" + month + "";
+                                                }
+                                                if (day.toString().length == 1) {
+                                                    day = "0" + day + "";
+                                                }
+                                                var dateStr = {};
+                                                //console.log(year +""+ month +""+ day);
+                                                dateStr = year + "" + month + "" + day;
+                                                link = "https://calendar.google.com/calendar/render?tab=mc&date=" + dateStr + "#main_7%7Cday-2";
+                                            }
+                                            window.open(link, "_parent");
+                                        })
+                                        .style("cursor", "pointer")
+                                        .data(months)
+                                        .enter().append("svg:text")
+                                ;
+                                // Add dark week seperators to days 7, 14, 21 and 28.
+                                vis.selectAll(".WeekLine")
+                                    .data([7,14,21,28])
+                                    .enter().append("circle")
+                                        .attr("class", "WeekLine")
+                                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                                        .attr("r",function(d,i){return r0+(d*r2)})
+                                        .attr("stroke", function(d, i) { return d3.hsl(0,0,0.25) })
+                                        .attr("fill","transparent")
+                                ;
+                                // Add labels to the months.
+                                vis.selectAll(".MonthLabel")
+                                    .data(months)
+                                    .enter().append("svg:text")
+                                        .attr("class", "MonthLabel")
+                                        .attr("transform", function(d,i) {
+                                            return "translate("
+                                                +(r1+(-rl*Math.sin(Math.PI/12+(i+6)*Math.PI/6)))
+                                                +","
+                                                +(r1+(rl*Math.cos(Math.PI/12+(i+6)*Math.PI/6)))
+                                                +") rotate("+(15+i*30)+")";
+                                         })    
+                                        .attr("text-anchor", "middle")
+                                        .attr("style","font-weight: bold; font-style: normal")
+                                        .attr("text-antialiasing","true")
+                                        .text(function(d,i){return d;})
+                                ;
+                                // Add the thick start month indicator bar.
+                                vis.selectAll("g.StartDate").data(dates.slice(0,1))
+                                    .enter().append("svg:g")
+                                        .attr("class", "StartDate")
+                                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                                    .append("svg:path")
+                                        .attr("stroke", function(d, i) { return d3.hsl(0,0,0.5) })
+                                        .style("stroke-width","3px")
+                                        .attr("d", arc2)
+                                ;
+                                // Add the central label.
+                                vis.selectAll(".lbl")
+                                    .data([
+
+                                    ])
+                                    .enter().append("svg:text")
+                                    .attr("class","lbl")
+                                    .attr("text-anchor", "middle")
+                                    .attr("style","font-weight: bold; font-size: 70%")
+                                    .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                                    .attr("dy",function(d,i){return (i-0.5)*10})
+                                    .text(function(d,i){return d;})
+                                ;
+                            }
+                        }   
+                    </script>        
+                    
+                        
+
+                        <div id="authorize-div" style="display: none">
+                            <span style="color: #ffffff">Authorize access to Google Calendar API</span>
+                                <!--Button for the user to click to initiate auth sequence -->
+                                <button id="authorize-button" onclick="handleAuthClick(event)">
+                                Authorize
+                                </button><br>
+                        </div>
+                            
+                            
+                            
+                            <div style="text-align: center; display: none;" ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000" id="test"></div>
+                            
+                            <pre style="color: #ffffff; background: rgb(210, 77, 87); border: none; font-family: Calibri, serif; font-size: large;" width="95%" style="text-align: center;" id="output"></pre><br><br>
+                            
+                            
+                    </div>
+
+                         <script type="text/ng-template" id="CalendarPage.html">
+                             <div class="modal fade">
+                              <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Create Event</h4>
+                      </div>
+                      <div class="modal-body">
+
+                        <form name="form" class="form-horizontal" role="form" validate>
+                          <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" id="name" placeholder="Horse Name" ng-model="name" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="date" class="col-sm-2 control-label">Date</label>
+                            <div class="col-sm-10">
+                              <input type="date" class="form-control" id="date" placeholder="Date" ng-model="date" required>
+                            </div>
+                          </div>
+
+                            <div class="form-group">
+                            <label for="time" class="col-sm-2 control-label">Time</label>
+                            <div class="col-sm-10">
+                              <input type="time" class="form-control" id="time" placeholder="Time" ng-model="time" required>
+                            </div>
+                          </div>
+
+                            <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <textarea id="description" name="description" placeholder="Description" style="width: 100%" rows="4" ng-model="description"></textarea>
+                            </div>
+                          </div>
+                        </form>
+
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" ng-click="close()" class="btn btn-primary" data-dismiss="modal" ng-disabled="form.$invalid">OK</button>
+                        <button type="button" ng-click="close()" class="btn" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                            </div>
+                         </script>
+
+                    </div>
+
+                    <script type='text/javascript'>
+
+                        var app = angular.module('app', ['angularModalService']);
+
+                        app.controller('Controller', function($scope, ModalService) {
+
+                            $scope.show = function() {
+                                ModalService.showModal({
+                                    templateUrl: 'CalendarPage.html',
+                                    controller: "ModalController"
+                                }).then(function(modal) {
+                                    modal.element.modal();
+                                    modal.close.then(function(result) {
+                                        if (result.name == null || result.date == null
+                                           || result.time == null) {
+                                            
+                                        }
+                                        else {
+                                            $scope.message = "Name: " + result.name + ", Date: " + result.date.toDateString() + ", Time: " + result.time.toTimeString();
+                                            var d = new Date(result.date.toDateString() + " " + result.time.toLocaleTimeString());
+                                            
+                                            // Add Event To Calendar
+                                            var event = {
+                                              'summary': result.name,
+                                              'description': result.description,
+                                              'start': {
+                                                'dateTime': d,
+                                                'timeZone': 'America/New_York'
+                                              },
+                                              'end': {
+                                                'dateTime': d,
+                                                'timeZone': 'America/New_York'
+                                              },
+                                             'reminders': {
+                                                'useDefault': false,
+                                                'overrides': [
+                                                  {'method': 'email', 'minutes': 24 * 60},
+                                                  {'method': 'popup', 'minutes': 10}
+                                                ]
+                                              }
+                                            };
+                                            
+                                            var request = gapi.client.calendar.events.insert({
+                                              'calendarId': 'primary',
+                                              'resource': event
+                                            });
+                                            
+                                            request.execute(function(event) {
+                                              
+                                            });
+                                            location.reload(true);
+                                        }
+                                    });
+                                });
+                            };
+
+                        });
+
+                        app.controller('ModalController', function($scope, close) {
+
+                            $scope.name = null;
+                            $scope.date = null;
+                            $scope.time = null;
+                            $scope.description = "";
+
+                            $scope.close = function(result) {
+                                close({
+                                    name: $scope.name,
+                                    date: $scope.date,
+                                    time: $scope.time,
+                                    description: $scope.description
+                                }, 500);
+                             };
+                            $scope.cancel = function() {
+
+                            //  Manually hide the modal.
+                            $element.modal('hide');
+
+                            //  Now call close, returning control to the caller.
+                            close({
+                              name: $scope.name,
+                              date: $scope.date,
+                              time: $scope.time,
+                              description: $scope.description
+                            }, 500); // close, but give 500ms for bootstrap to animate
+                          };
+
+                        });
+
+                </script>
+<script type="text/javascript">
+              // Your Client ID can be retrieved from your project in the Google
+              // Developer Console, https://console.developers.google.com
+              var CLIENT_ID = '902845324301-8usn9th82avpblfb4qj3a2mq3ojqokdr.apps.googleusercontent.com';
+
+              var SCOPES = ["https://www.googleapis.com/auth/calendar"];
+
+              /**
+               * Check if current user has authorized this application.
+               */
+                        
+              function checkAuth() {
+                gapi.auth.authorize(
+                  {
+                    'client_id': CLIENT_ID,
+                    'scope': SCOPES.join(' '),
+                    'immediate': true
+                  }, handleAuthResult);
+              }
+
+              /**
+               * Handle response from authorization server.
+               *
+               * @param {Object} authResult Authorization result.
+               */
+              function handleAuthResult(authResult) {
+                  window.onload = document.getElementById('authorize-div');
+                  var authorizeDiv = document.getElementById('authorize-div');
+                var addEventButton = document.getElementById('addEventButton');
+                  var selection = document.getElementById('formCalendar');
+                  var wheel = document.getElementById("test");
+                if (authResult && !authResult.error) {
+                  // Hide auth UI, then load client library.
+                  authorizeDiv.style.display = 'none';
+                  addEventButton.style.display = 'inline';
+                  wheel.style.display = 'inline';
+                  selection.style.display = 'inline';
+                  loadCalendarApi();
+                } else {
+                  // Show auth UI, allowing the user to initiate authorization by
+                  // clicking authorize button.
+                  authorizeDiv.style.display = 'inline';
+                }
+                  
+              }
+
+              /**
+               * Initiate auth flow in response to user clicking authorize button.
+               *
+               * @param {Event} event Button click event.
+               */
+              function handleAuthClick(event) {
+                gapi.auth.authorize(
+                  {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+                  handleAuthResult);
+                return false;
+              }
+
+              /**
+               * Load Google Calendar client library. List upcoming events
+               * once client library is loaded.
+               */
+              function loadCalendarApi() {
+                gapi.client.load('calendar', 'v3', listCalendars);
+                gapi.client.load('calendar', 'v3', listUpcomingEvents);
+              }
+
+              /**
+               * Print the summary and start datetime/date of the next ten events in
+               * the authorized user's calendar. If no events are found an
+               * appropriate message is printed.
+               */
+                var id;
+                function listCalendars() {
+                     var request = gapi.client.calendar.calendarList.list();
+                     var calendars = null;
+                     request.execute(function(resp){
+                             var calendars = resp.items;
+                         if (calendars.length > 0) {
+                              var cal = calendars[0];
+                              id = cal.id;
+                              //console.log(id);
+                        }
+                     });
+                }
+
+            /**
+               * Print the summary and start datetime/date of the next ten events in
+               * the authorized user's calendar. If no events are found an
+               * appropriate message is printed.
+               */
+                var eventsG = {};
+                eventsG.length = 0;
+                function listUpcomingEvents() {
+                var request = gapi.client.calendar.events.list({
+                  'calendarId': 'primary',
+                  'timeMin': (new Date()).toISOString(),
+                  'showDeleted': false,
+                  'singleEvents': true,
+                  'maxResults': 100,
+                  'orderBy': 'startTime'
+                });
+
+                    request.execute(function(resp) {
+                  var events = resp.items;
+                  eventsG = events.slice();
+                  if (events.length > 0) {
+                    for (i = 0; i < events.length; i++) {
+                      var event = events[i];
+                      var when = new Date( event.start.dateTime );
+                      if (!when) {
+                        when = new Date( event.start.date );
+                      }
+                      var day = when.getDay();
+                      if (when.getDate() == new Date().getDate()) {
+                          day = "Today";
+                      } else if (when.getDate() == new Date().getDate()+1) {
+                          day = "Tomorrow";
+                      } else if (day == 1) {
+                          day = "Monday";
+                      } else if (day == 2) {
+                          day = "Tuesday";
+                      } else if (day == 3) {
+                          day = "Wednesday";
+                      } else if (day == 4) {
+                          day = "Thursday";
+                      } else if (day == 5) {
+                          day = "Friday";
+                      } else if (day == 6) {
+                          day = "Saturday";
+                      } else if (day == 0) {
+                          day = "Sunday";
+                      }
+                      when = timeStamp(when);
+                      if (!event.description) {
+                          var description = "";
+                          appendPre(day + ' ' + when + ': ' + event.summary);
+                      } else {
+                          var description = event.description;
+                          appendPre(day + ' ' + when + ': ' + event.summary + ' [Reason: ' + description + ']');
+                      }
+                    }
+                  } else {
+                    appendPre('No upcoming events found.');
+                  }
+
+                });
+                    
+              }
+
+                function timeStamp(when) {
+                // Create a date object with the current time
+                  var now = when;
+
+                // Create an array with the current month, day and time
+                  var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+
+                // Create an array with the current hour, minute and second
+                  var time = [ now.getHours(), now.getMinutes() ];
+
+                // Determine AM or PM suffix based on the hour
+                  var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+
+                // Convert hour from military time
+                  time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+
+                // If hour is 0, set it to 12
+                  time[0] = time[0] || 12;
+
+                // If seconds and minutes are less than 10, add a zero
+                  for ( var i = 1; i < 3; i++ ) {
+                    if ( time[i] < 10 ) {
+                      time[i] = "0" + time[i];
+                    }
+                  }
+
+                // Return the formatted string
+                  return time.join(":") + suffix + ' ' + date.join("/");
+                }    
+            
+              /**
+               * Append a pre element to the body containing the given message
+               * as its text node.
+               *
+               * @param {string} message Text to be placed in pre element.
+               */
+              function appendPre(message) {
+                  var pre = document.getElementById("output");
+                var textContent = document.createTextNode(message + '\n');
+                pre.appendChild(textContent);
+                  
+                  // create svg element using D3.js
+                  // setTimeout(function(){    
+                var today = 0;
+                var today2 = 0;
+                var sameArray = [];
+                var realArray = [];
+                var prev = null;
+                var curr = null;
+                var startDate = new Date()
+                    var w = 600, // Width of SVG.
+                    h = 600, // Height of SVG.
+                    r0 = 50, // Radius of inner circle.
+                    r1 = Math.min(w, h) / 2, // Radius of outer circle.
+                    r2=(r1-r0)/36, // Radius delta of days.
+                    rl = 40*r2, // Radial distance of labels.
+                    months = [ // Name array for month labels.
+                     "Jan","Feb","Mar","Apr",
+                     "May","Jun","Jul","Aug",
+                     "Sep","Oct","Nov","Dec"
+                    ],
+                    dates=[]; // Array to hold 1 yr of dates.
+                    var endDate = new Date(startDate); // End date, incremented later.
+                    d3.select("svg").remove();
+                      vis = d3.select("#test") // SVG area to send output to.
+                      .append("svg:svg")
+                      .attr("width", w)
+                      .attr("height", h)
+                ;
+                // Calculate the end date.
+                endDate.setFullYear(endDate.getFullYear()+1);
+                endDate.setDate(endDate.getDate()-1);
+                // Define the arc parameters for the individual days.
+                var arc = d3.svg.arc()
+                    .startAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                    .endAngle(function(d) { return (d.getMonth()+1)*Math.PI/6; })
+                    .innerRadius(function(d) { return r0+(d.getDate()-1)*r2; })
+                    .outerRadius(function(d) { return r0+(d.getDate())*r2; })
+                ;
+                // Define the arc parameters for the thick start month indicator.
+                var arc2 = d3.svg.arc()
+                    .startAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                    .endAngle(function(d) { return (d.getMonth())*Math.PI/6; })
+                    .innerRadius(function(d) { return r0; })
+                    .outerRadius(function(d) { return r0+(31*r2); })
+                ;
+                // Generate an array for each day of the year.
+                for (
+                    d = new Date(startDate);
+                    d <= endDate;
+                    d.setDate(d.getDate()+1)
+                ) dates.push(new Date(d));
+                var newD = new Date();
+                document.getElementById("dateSelect").value = newD.getMonth()+1;
+                var date4 = null;
+                // Draw faint arcs for each day (events filled, else outlined).
+                vis.selectAll("g.AllDays")
+                    .data(dates)
+                    .enter().append("svg:g")
+                        .attr("class", "AllDays")
+                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                    .append("svg:path")
+                        .attr("stroke", function(d, i) { return d3.hsl(0,0.25,0.75) })
+                        .attr("fill", function(d, i) {
+                            var result = "#ffffff";
+                            for (j = 0; j < eventsG.length; j++) {
+                                  var event = eventsG[j];
+                                  var when = new Date( event.start.dateTime );
+                                  if (!when) {
+                                    when = new Date( event.start.date );
+                                  }
+                                  // date1=event date; date2=today; date3=current cell
+                                  var date1 = (when.getMonth()+1) + "/" + (when.getDate()) + "/" + (when.getFullYear());
+                                  var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                
+                                curr = date1;
+                                
+                                  if (date3 == date2 && date2 == date1) {
+                                      today2 = 1;
+                                  }
+                                  if (date3 == date2) {
+                                     result = "#000000";
+                                  }
+                                  else if (date1 == date3) {
+                                      result = "#2ecc71";
+                                  }
+                                var t = 0;
+                                var found = 0;
+                                for (t=0; t < sameArray.length; t++) {
+                                    if (sameArray[t] == curr) {
+                                        found = 1;
+                                    }
+                                }
+                                if (found == 0) {
+                                    sameArray.push(curr);
+                                    realArray.push(when);
+                                }
+                                prev = curr;
+                            }
+                            first = 0;
+                            if (j == 0) {
+                                var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                if (date3 == date2) {
+                                    result = "#000000";
+                                    today = 1;
+                                }
+                            }
+                            if (result == "#ffffff") {
+                                if (d.getMonth()+1 >= newD.getMonth()+1 && d.getMonth()+1 <= newD.getMonth()+4) {
+                                    result = "#fde3a7";
+                                }
+                                else if (d.getMonth()+1 >= newD.getMonth()+5 && d.getMonth()+1 <= newD.getMonth()+8) {
+                                    result = "#c5eff7";
+                                }
+                                else if (d.getMonth()+1 >= newD.getMonth()+9 && d.getMonth()+1 <= newD.getMonth()+12) {
+                                    result = "#dcc6e0";
+                                }
+                                else if (d.getMonth()+1 >= newD.getMonth()-3 && d.getMonth()+1 <= newD.getMonth()) {
+                                    result = "#dcc6e0";
+                                }
+                            }
+                            return result;
+                         })
+                        .attr("d", arc)
+                        .filter (function(d, i) {
+                            var result = 0;
+                            for (j = 0; j < eventsG.length; j++) {
+                                  var event = eventsG[j];
+                                  var when = new Date( event.start.dateTime );
+                                  if (!when) {
+                                    when = new Date( event.start.date );
+                                  }
+                                  var date1 = (when.getMonth()+1) + "/" + (when.getDate()) + "/" + (when.getFullYear());
+                                  var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                
+                                  if (date3 == date2) {
+                                     result = 1;
+                                      date4 = date3;
+                                      break;
+                                  }
+                                  else if (date1 == date3) {
+                                      result = 1;
+                                      date4 = date3;
+                                      break;
+                                  }
+                            }
+                            if (j == 0) {
+                                var date2 = (newD.getMonth()+1) + "/" + (newD.getDate()) + "/" + (newD.getFullYear());
+                                  var date3 = (d.getMonth()+1) + "/" + (d.getDate()) + "/" + (d.getFullYear());
+                                if (date3 == date2) {
+                                    date4 = date3;
+                                    result = 1;
+                                }
+                            }
+                            return result;
+                        })
+                        .on("click", function(d, i) {
+                            var link = "http://calendar.google.com";
+                            
+                            var w = 0;
+                            
+                            // if there are no events today but events after
+                            // today == 0 and today2 == 0 when no event today but events after
+                            // today == 0 and today2 == 1 when events today and after
+                            // today == 0 and today2 == 1 when events today only
+                            // today == 1 and today2 == 0 when no events
+                            if (today == 0 && today2 == 1) {
+                                i++;
+                            }
+                            
+                            if (i == 0) {
+                                link = "https://calendar.google.com/calendar/render#main_7%7Cday";
+                            }
+                            else {
+                                var when = realArray[i-1];
+                                var year = when.getFullYear();
+                                var month = when.getMonth()+1;
+                                var day = when.getDate();
+                                if (month.toString().length == 1) {
+                                    month = "0" + month + "";
+                                }
+                                if (day.toString().length == 1) {
+                                    day = "0" + day + "";
+                                }
+                                var dateStr = {};
+                                //console.log(year +""+ month +""+ day);
+                                dateStr = year + "" + month + "" + day;
+                                link = "https://calendar.google.com/calendar/render?tab=mc&date=" + dateStr + "#main_7%7Cday-2";
+                            }
+                            window.open(link, "_parent");
+                        })
+                        .style("cursor", "pointer")
+                        .data(months)
+                        .enter().append("svg:text")
+                ;
+                // Add dark week seperators to days 7, 14, 21 and 28.
+                vis.selectAll(".WeekLine")
+                    .data([7,14,21,28])
+                    .enter().append("circle")
+                        .attr("class", "WeekLine")
+                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                        .attr("r",function(d,i){return r0+(d*r2)})
+                        .attr("stroke", function(d, i) { return d3.hsl(0,0,0.25) })
+                        .attr("fill","transparent")
+                ;
+                // Add labels to the months.
+                vis.selectAll(".MonthLabel")
+                    .data(months)
+                    .enter().append("svg:text")
+                        .attr("class", "MonthLabel")
+                        .attr("transform", function(d,i) {
+                            return "translate("
+                                +(r1+(-rl*Math.sin(Math.PI/12+(i+6)*Math.PI/6)))
+                                +","
+                                +(r1+(rl*Math.cos(Math.PI/12+(i+6)*Math.PI/6)))
+                                +") rotate("+(15+i*30)+")";
+                         })    
+                        .attr("text-anchor", "middle")
+                        .attr("style","font-weight: bold; font-style: normal")
+                        .attr("text-antialiasing","true")
+                        .text(function(d,i){return d;})
+                ;
+                // Add the thick start month indicator bar.
+                vis.selectAll("g.StartDate").data(dates.slice(0,1))
+                    .enter().append("svg:g")
+                        .attr("class", "StartDate")
+                        .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                    .append("svg:path")
+                        .attr("stroke", function(d, i) { return d3.hsl(0,0,0.5) })
+                        .style("stroke-width","3px")
+                        .attr("d", arc2)
+                ;
+                // Add the central label.
+                vis.selectAll(".lbl")
+                    .data([
+                        
+                    ])
+                    .enter().append("svg:text")
+                    .attr("class","lbl")
+                    .attr("text-anchor", "middle")
+                    .attr("style","font-weight: bold; font-size: 70%")
+                    .attr("transform", "translate(" + r1 + "," + r1 + ")")
+                    .attr("dy",function(d,i){return (i-0.5)*10})
+                    .text(function(d,i){return d;})
+                ;
+                    
+                //}, 1000);
+              }
+
+            </script>
+            <script src="https://apis.google.com/js/client.js?onload=checkAuth">
+            </script>
+                    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+            <script>
+                
+        </script>
+        </body>
+</html>

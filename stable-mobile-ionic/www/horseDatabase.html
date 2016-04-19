@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>STABLE ::: HORSE_DB</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+</head>
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+<div class="panel panel-primary" ng-controller="HorseCtrl">
+    <div class="panel-heading" style="font-size:large">
+        Horses
+    </div>
+
+    <form ng-submit="addFormSubmit()" ng-show="addFormShow">
+        <input type="text" ng-model="name" placeholder="Name" />
+        <input type="text" ng-model="gender" placeholder="Gender" />
+        <input type="text" ng-model="breed" placeholder="Breed" />
+        <input type="text" ng-model="weight" placeholder="Weight" />
+        <input type="text" ng-model="dob" placeholder="DoB" />
+        <input type="text" ng-model="sire" placeholder="Sire" />
+        <input type="text" ng-model="mare" placeholder="Mare" />
+        <input type="text" ng-model="auctionPrice" placeholder="Auction Price" />
+        <input type="submit" value="Add Horse" class="btn btn-default btn-success" />
+    </form>
+
+    <form ng-submit="editFormSubmit()" ng-show="editFormShow">
+        <input type="text" ng-model="name" placeholder="Name" />
+        <input type="text" ng-model="gender" placeholder="Gender" />
+        <input type="text" ng-model="breed" placeholder="Breed" />
+        <input type="text" ng-model="weight" placeholder="Weight" />
+        <input type="text" ng-model="dob" placeholder="DoB" />
+        <input type="text" ng-model="sire" placeholder="Sire" />
+        <input type="text" ng-model="mare" placeholder="Mare" />
+        <input type="text" ng-model="auctionPrice" placeholder="Auction Price" />
+        <input type="submit" value="Edit Horse" class="btn btn-default btn-warning" />
+    </form>
+    <div class="panel panel-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>Gender</td>
+                <td>Breed</td>
+                <td>Weight</td>
+                <td>Date of Birth</td>
+                <td>Sire</td>
+                <td>Mare</td>
+                <td>Auction Price</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="horse in horses">
+                <td>{{ horse.name}}</td>
+                <td>{{ horse.gender}}</td>
+                <td>{{ horse.breed}}</td>
+                <td>{{ horse.weight}}</td>
+                <td>{{ horse.dob}}</td>
+                <td>{{ horse.sire}}</td>
+                <td>{{ horse.mare}}</td>
+                <td>{{ horse.auctionPrice}}</td>
+                <td>
+                    <button class="btn btn-primary" ng-click="edit(horse.name)" >Edit</button>&nbsp;
+                    <button class="btn btn-danger" ng-click="removeHorse(horse)" >Delete</button>
+                    <button class="btn btn-primary" ng-click="goToHorseProfile(horse.name)" >Horse Profile</button>
+                    <button class="btn btn-primary" ng-click="addToQueue(horse.name)" >Add To Export Queue</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-success" ng-click="showForm()">New Horse</button>
+    </div>
+</div>
+</body>
+    <button ng-controller="HorseCtrl" type="button" class="btn btn-primary" ng-click="back()">Back</button>
+</html>

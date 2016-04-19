@@ -1,0 +1,310 @@
+                <!DOCTYPE html>
+
+                <script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"></script>
+
+                <html>
+                <head>
+                <style type="text/css">
+                        body {
+                            background: rgb(210, 77, 87) !important;
+                        }
+                    </style>
+                    <style>
+                input:invalid {
+                    border: 1px solid red;
+                }
+                </style>
+                  <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
+
+                      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
+
+                    <link href="./css/bootstrap.css" rel="stylesheet">
+
+                    
+
+                  <title>My Calendar</title>
+
+                </head>
+
+                <body>
+                    <script src="https://code.angularjs.org/1.4.9/angular.min.js"></script>
+                    <script src="https://rawgit.com/dwmkerr/angular-modal-service/master/dst/angular-modal-service.js"></script>
+
+                    <i><span
+                        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
+
+                    <div class="container" ng-app="app" ng-controller="Controller">
+
+                        <div style="text-align: center;">
+                    <span style="color: #ffffff; font-size: 18px; font-family: Calibri,serif; text-align: center;"><h3><b>My Calendar</b></h3></span>
+
+                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/MainPage.html'">Back</button>
+                    
+                    <button type="button" id="addEventButton" style="display: none" class="btn btn-primary btn-lg" href ng-click="show()">Add Event</button><br>
+                            
+                    <a style="color: white" href="/RadialCalendar.html">View As Radial Calendar</a><br>
+
+                        <div id="authorize-div" style="display: none">
+                            <span style="color: #ffffff">Authorize access to Google Calendar API</span>
+                                <!--Button for the user to click to initiate auth sequence -->
+                                <button id="authorize-button" onclick="handleAuthClick(event)">
+                                Authorize
+                                </button>
+                        </div>
+                        <div id="iframe-div" style="display: none">
+                            <iframe id="myIframe" src="" style="border: 0" width="95%" height="600" frameborder="0" scrolling="no"></iframe>
+                        </div>
+                    </div>
+
+                         <script type="text/ng-template" id="CalendarPage.html">
+                             <div class="modal fade">
+                              <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Create Event</h4>
+                      </div>
+                      <div class="modal-body">
+
+                        <form name="form" class="form-horizontal" role="form" validate>
+                          <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" id="name" placeholder="Horse Name" ng-model="name" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="date" class="col-sm-2 control-label">Date</label>
+                            <div class="col-sm-10">
+                              <input type="date" class="form-control" id="date" placeholder="Date" ng-model="date" required>
+                            </div>
+                          </div>
+
+                            <div class="form-group">
+                            <label for="time" class="col-sm-2 control-label">Time</label>
+                            <div class="col-sm-10">
+                              <input type="time" class="form-control" id="time" placeholder="Time" ng-model="time" required>
+                            </div>
+                          </div>
+
+                            <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <textarea id="description" name="description" placeholder="Description" style="width: 100%" rows="4" ng-model="description"></textarea>
+                            </div>
+                          </div>
+                        </form>
+
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" ng-click="close()" class="btn btn-primary" data-dismiss="modal" ng-disabled="form.$invalid">OK</button>
+                        <button type="button" ng-click="close()" class="btn" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                            </div>
+                         </script>
+
+                    </div>
+
+                    <script type='text/javascript'>
+
+                        var app = angular.module('app', ['angularModalService']);
+
+                        app.controller('Controller', function($scope, ModalService) {
+
+                            $scope.show = function() {
+                                ModalService.showModal({
+                                    templateUrl: 'CalendarPage.html',
+                                    controller: "ModalController"
+                                }).then(function(modal) {
+                                    modal.element.modal();
+                                    modal.close.then(function(result) {
+                                        if (result.name == null || result.date == null
+                                           || result.time == null) {
+                                            var embedCode = "https://calendar.google.com/calendar/embed?src=" + id + "&ctz=America/New_York";
+                                            document.getElementById("myIframe").src=embedCode;
+                                        }
+                                        else {
+                                            $scope.message = "Name: " + result.name + ", Date: " + result.date.toDateString() + ", Time: " + result.time.toTimeString();
+                                            var d = new Date(result.date.toDateString() + " " + result.time.toLocaleTimeString());
+                                            
+                                            // Add Event To Calendar
+                                            var event = {
+                                              'summary': result.name,
+                                              'description': result.description,
+                                              'start': {
+                                                'dateTime': d,
+                                                'timeZone': 'America/New_York'
+                                              },
+                                              'end': {
+                                                'dateTime': d,
+                                                'timeZone': 'America/New_York'
+                                              },
+                                             'reminders': {
+                                                'useDefault': false,
+                                                'overrides': [
+                                                  {'method': 'email', 'minutes': 24 * 60},
+                                                  {'method': 'popup', 'minutes': 10}
+                                                ]
+                                              }
+                                            };
+                                            
+                                            var request = gapi.client.calendar.events.insert({
+                                              'calendarId': 'primary',
+                                              'resource': event
+                                            });
+                                            
+                                            request.execute(function(event) {
+                                              
+                                            });
+                                           
+                                            setTimeout(function(){ 
+                                                var embedCode = "https://calendar.google.com/calendar/embed?src=" + id + "&ctz=America/New_York";
+                                            document.getElementById("myIframe").src=embedCode;
+                                            }, 500);
+
+                                        }
+                                    });
+                                });
+                            };
+
+                        });
+
+                        app.controller('ModalController', function($scope, close) {
+
+                            $scope.name = null;
+                            $scope.date = null;
+                            $scope.time = null;
+                            $scope.description = "";
+
+                            $scope.close = function(result) {
+                                close({
+                                    name: $scope.name,
+                                    date: $scope.date,
+                                    time: $scope.time,
+                                    description: $scope.description
+                                }, 500);
+                             };
+                            $scope.cancel = function() {
+
+                            //  Manually hide the modal.
+                            $element.modal('hide');
+
+                            //  Now call close, returning control to the caller.
+                            close({
+                              name: $scope.name,
+                              date: $scope.date,
+                              time: $scope.time,
+                              description: $scope.description
+                            }, 500); // close, but give 500ms for bootstrap to animate
+                          };
+
+                        });
+
+                    </script>
+<script type="text/javascript">
+              // Your Client ID can be retrieved from your project in the Google
+              // Developer Console, https://console.developers.google.com
+              var CLIENT_ID = '902845324301-8usn9th82avpblfb4qj3a2mq3ojqokdr.apps.googleusercontent.com';
+
+              var SCOPES = ["https://www.googleapis.com/auth/calendar"];
+
+              /**
+               * Check if current user has authorized this application.
+               */
+              function checkAuth() {
+                gapi.auth.authorize(
+                  {
+                    'client_id': CLIENT_ID,
+                    'scope': SCOPES.join(' '),
+                    'immediate': true
+                  }, handleAuthResult);
+              }
+
+              /**
+               * Handle response from authorization server.
+               *
+               * @param {Object} authResult Authorization result.
+               */
+              function handleAuthResult(authResult) {
+                var authorizeDiv = document.getElementById('authorize-div');
+                var addEventButton = document.getElementById('addEventButton');
+                var iframeDiv = document.getElementById('iframe-div');
+                if (authorizeDiv == null && addEventButton == null && iframeDiv == null) {
+                    console.log("HandleAuthResult failed.");
+                    return;
+                }
+                
+                if (authResult && !authResult.error) {
+                  // Hide auth UI, then load client library.
+                  authorizeDiv.style.display = 'none';
+                  addEventButton.style.display = 'inline';
+                  iframeDiv.style.display = 'inline';
+                  loadCalendarApi();
+                } else {
+                  // Show auth UI, allowing the user to initiate authorization by
+                  // clicking authorize button.
+                  authorizeDiv.style.display = 'inline';
+                }
+              }
+
+              /**
+               * Initiate auth flow in response to user clicking authorize button.
+               *
+               * @param {Event} event Button click event.
+               */
+              function handleAuthClick(event) {
+                gapi.auth.authorize(
+                  {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+                  handleAuthResult);
+                return false;
+              }
+
+              /**
+               * Load Google Calendar client library. List upcoming events
+               * once client library is loaded.
+               */
+              function loadCalendarApi() {
+                gapi.client.load('calendar', 'v3', listCalendars);
+              }
+
+              /**
+               * Print the summary and start datetime/date of the next ten events in
+               * the authorized user's calendar. If no events are found an
+               * appropriate message is printed.
+               */
+                var id;
+                function listCalendars() {
+                     var request = gapi.client.calendar.calendarList.list();
+                     var calendars = null;
+                     request.execute(function(resp){
+                             var calendars = resp.items;
+                         if (calendars.length > 0) {
+                              var cal = calendars[0];
+                              id = cal.id;
+                              console.log(id);
+                             var embedCode = "https://calendar.google.com/calendar/embed?src=" + id + "&ctz=America/New_York";
+                             document.getElementById("myIframe").src=embedCode;
+                        }
+                     });
+                }
+
+              /**
+               * Append a pre element to the body containing the given message
+               * as its text node.
+               *
+               * @param {string} message Text to be placed in pre element.
+               */
+              function appendPre(message) {
+                  var pre = document.getElementById("output");
+                var textContent = document.createTextNode(message + '\n');
+                pre.appendChild(textContent);
+              }
+
+            </script>
+            <script src="https://apis.google.com/js/client.js?onload=checkAuth">
+            </script>
+                </body>
+                    </html>
