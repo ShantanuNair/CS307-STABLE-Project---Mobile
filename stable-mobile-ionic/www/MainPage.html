@@ -153,7 +153,7 @@
 
 <body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
 <i><span
-        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
+        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px; line-height: 50px">STABLE</span></i>
 
 
 <button ng-controller="MainPageController" type="button" class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:1%;" ng-click='logout()'>
@@ -185,10 +185,12 @@
                             class="btn btn-default btn-lg btn-border">Training
                     </button>
                 </td>
+<!--
                 <td>
                     <button style="padding: 14px 40px;" type="button" onclick="location.href='CalendarPage.html'" class="btn btn-default btn-lg btn-border">Calendar
                     </button>
                 </td>
+-->
             </tr>
         </table>
     </nav>
@@ -225,35 +227,7 @@
         </button>
         
         
-              <button type="button" class="btn tall-btn btn-primary btn-lg btn-block" ng-click='toggleSearch()' ng-hide='searchOn'>Search&nbsp&nbsp&nbsp
-            <img height="85" width="100" src="http://icons.iconarchive.com/icons/hopstarter/scrap/48/Magnifying-Glass-icon.png">
-        </button>
-        <form ng-show='searchOn'>
-            <table style='width:100%;'>
-            <td>
-            <div style="font-size: x-large; color: #ffffff; font-family: calibri,serif;">
-            <input type="radio" name="searchCategory" value="s_horse" checked> Horse
-            <input type="radio" name="searchCategory" value="s_vaccine"> Vaccine
-            <input type="radio" name="searchCategory" value="s_training"> Training
-            <div><input type="text" placeholder="Search for items" class="input" ng-keydown="checkKeyDown($event)" ng-keyup="checkKeyUp($event)" ng-model="searchText" ng-change="search()" style="color:black;" name="horseSearch" autocomplete="off"/></div>
-            <div>
-                <ul class="suggestions-list" ng-show="searchText.length">
-                    <li ng-repeat="suggestion in searchCategory | filter:searchText | limitTo:5" ng-class="{active : selectedIndex === $index}" ng-click="AssignValueAndHide(suggestion.name)">{{suggestion.name}}</li>
-                </ul>
-            </div>    
-            </div>
-            </td>
-                
-            <td>
-            <div class="btn-group-vertical btn-block">
-                <button type='submit' class='btn btn-primary btn-lg' style="margin-top:5px;" ng-click="toWindowForSearch(searchText)">View Profile
-                </button>
-                <button ng-click='toggleSearch()' class='btn btn-primary btn-lg' style="margin-top:5px;">Cancel  
-                </button>
-            </div>
-            </td>
-            </table>
-          </form>
+              
         <!---
         <button type="button" class="ex1 btn tall-btn btn-primary btn-lg btn-block" ng-click='toHorse(horse.name)'>Search Horses:&nbsp&nbsp
 
@@ -283,12 +257,42 @@
             <img height="85" width="85" src="http://images.clipartpanda.com/syringe-clipart-9cRLkrgce.png">
         </button>
 
-        <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
+       
+    </aside>
+     <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
             ng-click='newTraining()'>
             New Training&nbsp&nbsp&nbsp
             <img height="85" width="85" src="http://www.svsd.net/cms/lib5/PA01001234/Centricity/Domain/1459/Clipboard%20Clipart.gif">
+    </button>
+    <button type="button" class="btn tall-btn btn-primary btn-lg btn-block" ng-click='toggleSearch()' ng-hide='searchOn'>Search&nbsp&nbsp&nbsp
+            <img height="85" width="100" src="http://icons.iconarchive.com/icons/hopstarter/scrap/48/Magnifying-Glass-icon.png">
         </button>
-    </aside>
+        <form ng-show='searchOn'>
+            <table style='width:100%;'>
+            <td>
+            <div style="font-size: x-large; color: #ffffff; font-family: calibri,serif;">
+            <input type="radio" name="searchCategory" value="s_horse" checked> Horse
+            <input type="radio" name="searchCategory" value="s_vaccine"> Vaccine
+            <input type="radio" name="searchCategory" value="s_training"> Training
+            <div><input type="text" placeholder="Search for items" class="input" ng-keydown="checkKeyDown($event)" ng-keyup="checkKeyUp($event)" ng-model="searchText" ng-change="search()" style="color:black;" name="horseSearch" autocomplete="off"/></div>
+            <div>
+                <ul class="suggestions-list" ng-show="searchText.length">
+                    <li ng-repeat="suggestion in searchCategory | filter:searchText | limitTo:5" ng-class="{active : selectedIndex === $index}" ng-click="AssignValueAndHide(suggestion.name)">{{suggestion.name}}</li>
+                </ul>
+            </div>    
+            </div>
+            </td>
+                
+            <td>
+            <div class="btn-group-vertical btn-block">
+                <button type='submit' class='btn btn-primary btn-lg' style="margin-top:5px;" ng-click="toWindowForSearch(searchText)">View Profile
+                </button>
+                <button ng-click='toggleSearch()' class='btn btn-primary btn-lg' style="margin-top:5px;">Cancel  
+                </button>
+            </div>
+            </td>
+            </table>
+          </form>
     <div ng-controller="fileUploadController">
         <input id="myInput" onchange="angular.element(this).scope().generateReport(event)" type="file" style="visibility:hidden" />
         <button type="button" class="btn btn-primary btn-lg"  onclick="$('#myInput').click();" id="file_select" name="file_select" >Import</button>
