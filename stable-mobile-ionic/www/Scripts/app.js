@@ -340,7 +340,7 @@ app.controller('vaccineFormController', [ '$scope', '$firebaseArray',"Auth", '$h
             "price": $scope.vaccinePrice,
         };
 
-        if (typeof vaccine.name != "string" || typeof vaccine.name === null) {
+        if (typeof vaccine.name != "string" || typeof vaccine.name === null || vaccine.name.indexOf("/") > -1 ) {
             alert("Please provide a valid vaccine name");
         }
         else if (typeof vaccine.seller != "string" || typeof vaccine.seller === null) {
@@ -387,7 +387,7 @@ app.controller('trainingFormController', [ '$scope', '$firebaseArray', '$http', 
             "equipment": $scope.trainingEquipment,
         };
 
-        if (typeof regimen.name != "string" || typeof regimen.name=== null) {
+        if (typeof regimen.name != "string" || typeof regimen.name=== null || regimen.name.indexOf("/") >  -1 ) {
             alert("Please provide a valid regimen name");
         }
         else if (typeof regimen.exercise != "string" || typeof regimen.exercise  === null) {
