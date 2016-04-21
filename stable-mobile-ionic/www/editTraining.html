@@ -1,7 +1,7 @@
 <!doctype html>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 <script type="text/javascript" src="Scripts/app.js"></script>
 <!-- Firebase -->
 <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
@@ -11,6 +11,7 @@
 <html>
 
 <head>
+    <link href="./css/horseForm.css" rel="stylesheet">
     <title>Training Form</title>
 </head>
 
@@ -43,9 +44,8 @@
         <textarea id="trainingEquipment" rows="5" cols="50" name="trainingEquipment" type="text" placeholder="Equipment" ng-model="trainingEquipment" required></textarea>
 		<br><br>
 
-        <button type="button" onclick="history.go(-1);return true;">Back</button>
-
-        <button name="submitButton" ng-click="clicked = 1" type="submit">Submit</button>
+        <button type="button" class="btn btn-primary btn-lg" onclick="history.go(-1);return true;">Back</button>
+        <button name="submitButton" class="btn btn-primary btn-lg" ng-click="clicked = 1" type="submit">Submit</button>
         <br><br>
 
     </form>

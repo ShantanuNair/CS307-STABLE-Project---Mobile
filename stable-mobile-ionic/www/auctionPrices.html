@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    
+<script type="text/javascript" src="Scripts/app.js"></script>
+<!-- Firebase -->
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Auction Prices</title>
+	<style type="text/css">
+        body {
+            background: rgb(210, 77, 87) !important;
+        }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+</head>
+<body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
+	<i><span
+        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
+<script>
+	var total = 0;
+</script>
+	
+<div class="panel panel-primary" ng-controller="PriceController">
+    <div class="panel-heading" style="font-size:large">
+        Auction Prices
+    </div>
+
+    <div class="panel panel-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <td><b>Name</b></td>
+                <td><b>Auction Price</b></td>
+				<td><b>Expenditures</b></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="horse in horses">
+                <td>{{ horse.name}}</td>
+                <td>{{ horse.auctionPrice | currency }}</td>
+				<td>{{ horseTotal(horse.name) | currency }}</td>
+            </tr>
+            </tbody>
+        </table>
+		<br><h3>Total Auction Price: {{ total() | currency }}<br>Total Expenditures: {{ vaccineTotal() | currency }}</h3>
+    </div>
+</div>
+</body>
+    <button ng-controller="PriceController" type="button" class="btn btn-primary" ng-click="back()">Back</button>
+	<button ng-controller="PriceController" type="button" class="btn btn-primary" ng-click="createExcelSheet()">Download Excel Spreadsheet</button>
+</html>

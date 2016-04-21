@@ -165,9 +165,9 @@
         display: none;
         position: fixed;
         z-index: 1;
-        left: 10%;
+        left: 5%;
         top: 10%;
-        width: 660px;
+        width: 840px;
         height: 50%;
         border-bottom-left-radius: 50px;
         border-bottom-right-radius: 50px;

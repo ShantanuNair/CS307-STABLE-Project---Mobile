@@ -1,8 +1,8 @@
 <!doctype html>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 
 <script type="text/javascript" src="Scripts/app.js"></script>
 <!-- Firebase -->
@@ -33,8 +33,8 @@
 
 <section>
   <code>
-      <button id="modalButton" class="btn btn-primary btn-lg" ng-controller = "horseDataController" ng-click="openModal()">Add Vaccines</button><br><br>
-       <button id="modalTrainingButton" class="btn btn-primary btn-lg" ng-controller = "horseDataController" ng-click="openTrainingModal()">Add Training Programs</button>
+      <button id="modalButton" class="btn btn-primary btn-lg" ng-controller = "horseDataController" ng-click="openModal()">Vaccines</button><br><br>
+       <button id="modalTrainingButton" class="btn btn-primary btn-lg" ng-controller = "horseDataController" ng-click="openTrainingModal()">Training Programs</button>
      <div id="vaccineModal" class="modal" ng-controller = "horseDataController">
         <div id="vaccineModalInterior" class="modal-content">
             <i><span style="font-family: Segoe UI Black,serif; font-size: 15px;">VACCINES</span></i>
@@ -134,7 +134,7 @@
             <textarea id="notes" rows="5" cols="35" name="notes" type="text" placeholder="Financial and Medical Notes" ng-model="notes" required></textarea>
             <br><br>
             <span style="color: #ffffff; font-family: calibri,serif; ">Attach Picture:</span>
-            <input name="horseImage" type="file" accept="image/*" onchange="angular.element(this).scope().loadFile()" ng-click="imageAdded=1" ng-model="horseImage">
+            <input name="horseImage" type="file" accept="image/*" onchange="angular.element(this).scope().loadFile()" ng-click="imageAdded=1; addImage()" ng-model="horseImage">
             <br><br>
 
             <button type="button" class="btn btn-primary btn-lg" onclick="history.go(-1);return true;">Back</button>

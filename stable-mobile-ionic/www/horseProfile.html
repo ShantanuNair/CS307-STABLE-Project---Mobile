@@ -18,7 +18,7 @@
     <link href="./css/horseForm.css" rel="stylesheet">  
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <title>Horse Profile</title>
 </head>
 
@@ -43,7 +43,7 @@
         <div id="vaccineModalInterior" class="modal-content">
             <i><span style="font-family: Segoe UI Black,serif; font-size: 15px;">VACCINES</span></i>
                                   
-            <table class="table" border=1 frame=void rules=rows>
+            <table class="table" border=1 frame=void rules=rows style="width:100%">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -110,7 +110,8 @@
             <!---
             <td id="all"><img id="all" height="200" width="200" src="http://www.zastavki.com/pictures/2560x1600/2011/Animals_Horses_Racehorse_029556_.jpg"></td>
             --->
-            <td id="all"><img height="200" width="200" id="img"></td>
+
+            <td id="all"><img height="200" width="200" alt="No Image Found" id="img"></td>
     </tr>
     </table>
     <button type="button" style="position:absolute; left:35%;" class="btn btn-primary btn-lg" ng-controller="HorseController" ng-click="edit()">Edit Info</button>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <!--- may need these scripts
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.1/ui-bootstrap-tpls.js"></script>
 --->
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
 <script type="text/javascript" src="Scripts/app.js"></script>
 <!-- Firebase -->
 <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
@@ -17,10 +17,10 @@
 <head>
                       <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
 
-                      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
+                      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
 
                   <style type="text/css">
-                    @import url('http://getbootstrap.com/dist/css/bootstrap.css');
+                    @import url('https://getbootstrap.com/dist/css/bootstrap.css');
                   </style>
 
     <meta charset="UTF-8">
@@ -31,11 +31,7 @@
         }
     </style>
     <link rel="stylesheet" href="css/bootstrap.css">
-    
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <script src="lib/ionic/js/ionic.bundle.js"></script>   
-    <script src="cordova.js"></script>
-    
+
     <style>
         nav {
             color: black;
@@ -147,13 +143,41 @@
         .suggestions-list:focus{
             outline:none;
         }
+/*        
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 5%;
+        top: 10%;
+        width: 840px;
+        height: 50%;
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border-top-left-radius: 50px;
+        border-top-right-radius: 50px;
+        background-color: #800000;
+        overflow:auto;
+    }
+*/        
+    .modal-content {
+        background-color: #800000;
+        margin: 15% auto;
+
+        border 1px solid #888;
+        width: 80%;
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border-top-left-radius: 50px;
+        border-top-right-radius: 50px;
+    }
         
     </style>
 </head>
 
 <body ng-app="app" bgcolor="#D24D57" text="#ffffff" link="#ff0000" vlink="#ff0000" alink="#ff0000">
 <i><span
-        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px; line-height: 50px">STABLE</span></i>
+        style="color: #ffffff; font-family: Segoe UI Black,serif; font-size: 50px; margin-left: 10px;">STABLE</span></i>
 
 
 <button ng-controller="MainPageController" type="button" class="btn btn-primary btn-lg" name="create_user_button" style="float:right; margin-right:2.5%; margin-top:1%;" ng-click='logout()'>
@@ -169,28 +193,27 @@
             <tr>
                 <td>
                     <button style="padding: 14px 40px;" type="button"
-                            onclick="location.href='horseDatabase.html'"
+                            onclick="location.href='/horseDatabase.html'"
                             class="btn btn-default btn-lg btn-border">Horses
                     </button>
                 </td>
+
                 <td>
                     <button style="padding: 14px 40px;" type="button"
-                            onclick="location.href='vaccineDatabase.html'"
+                            onclick="location.href='/vaccineDatabase.html'"
                             class="btn btn-default btn-lg btn-border">Vaccines
                     </button>
                 </td>
                 <td>
                     <button style="padding: 14px 40px;" type="button"
-                            onclick="location.href='trainingDatabase.html'"
+                            onclick="location.href='/trainingDatabase.html'"
                             class="btn btn-default btn-lg btn-border">Training
                     </button>
                 </td>
-<!--
                 <td>
-                    <button style="padding: 14px 40px;" type="button" onclick="location.href='CalendarPage.html'" class="btn btn-default btn-lg btn-border">Calendar
+                    <button style="padding: 14px 40px;" type="button" onclick="location.href='/CalendarPage.html'" class="btn btn-default btn-lg btn-border">Calendar
                     </button>
                 </td>
--->
             </tr>
         </table>
     </nav>
@@ -199,7 +222,7 @@
     <table style="width:100%">
         <tr>
             <td>
-                <span class="ex2" onclick="location.href='CalendarPage.html'" style="font-size: x-large; color: #ffffff; font-family: calibri,serif; "><b>Reminders:</b></span> 
+                <span class="ex2" onclick="location.href='/CalendarPage.html'" style="font-size: x-large; color: #ffffff; font-family: calibri,serif; "><b>Reminders:</b></span> 
                 <div id="authorize-div" style="display: none">
                         <span style="color: #ffffff">Authorize access to Google Calendar API</span>
                             <!--Button for the user to click to initiate auth sequence -->
@@ -211,7 +234,7 @@
                         <pre style="color: #ffffff; background: rgb(210, 77, 87); border: none; font-family: Calibri, serif; font-size: large;" width="95%" style="text-align: center;" id="output"></pre>
             </td>
             <td>
-                <button type="button" class="btn btn-primary btn-lg" onclick="location.href='CalendarPage.html'">View
+                <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/CalendarPage.html'">View
                     All
                 </button>
             </td>
@@ -227,7 +250,35 @@
         </button>
         
         
-              
+              <button type="button" class="btn tall-btn btn-primary btn-lg btn-block" ng-click='toggleSearch()' ng-hide='searchOn'>Search&nbsp&nbsp&nbsp
+            <img height="85" width="100" src="http://icons.iconarchive.com/icons/hopstarter/scrap/48/Magnifying-Glass-icon.png">
+        </button>
+        <form ng-show='searchOn'>
+            <table style='width:100%;'>
+            <td>
+            <div style="font-size: x-large; color: #ffffff; font-family: calibri,serif;">
+            <input type="radio" name="searchCategory" value="s_horse" checked> Horse
+            <input type="radio" name="searchCategory" value="s_vaccine"> Vaccine
+            <input type="radio" name="searchCategory" value="s_training"> Training
+            <div><input type="text" placeholder="Search for items" class="input" ng-keydown="checkKeyDown($event)" ng-keyup="checkKeyUp($event)" ng-model="searchText" ng-change="search()" style="color:black;" name="horseSearch" autocomplete="off"/></div>
+            <div>
+                <ul class="suggestions-list" ng-show="searchText.length">
+                    <li ng-repeat="suggestion in searchCategory | filter:searchText | limitTo:5" ng-class="{active : selectedIndex === $index}" ng-click="AssignValueAndHide(suggestion.name)">{{suggestion.name}}</li>
+                </ul>
+            </div>    
+            </div>
+            </td>
+                
+            <td>
+            <div class="btn-group-vertical btn-block">
+                <button type='submit' class='btn btn-primary btn-lg' style="margin-top:5px;" ng-click="toWindowForSearch(searchText)">View Profile
+                </button>
+                <button ng-click='toggleSearch()' class='btn btn-primary btn-lg' style="margin-top:5px;">Cancel  
+                </button>
+            </div>
+            </td>
+            </table>
+          </form>
         <!---
         <button type="button" class="ex1 btn tall-btn btn-primary btn-lg btn-block" ng-click='toHorse(horse.name)'>Search Horses:&nbsp&nbsp
 
@@ -257,50 +308,40 @@
             <img height="85" width="85" src="http://images.clipartpanda.com/syringe-clipart-9cRLkrgce.png">
         </button>
 
-       
-    </aside>
-     <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
+        <button type="button" class="btn tall-btn btn-primary btn-lg btn-block"
             ng-click='newTraining()'>
             New Training&nbsp&nbsp&nbsp
             <img height="85" width="85" src="http://www.svsd.net/cms/lib5/PA01001234/Centricity/Domain/1459/Clipboard%20Clipart.gif">
-    </button>
-    <button type="button" class="btn tall-btn btn-primary btn-lg btn-block" ng-click='toggleSearch()' ng-hide='searchOn'>Search&nbsp&nbsp&nbsp
-            <img height="85" width="100" src="http://icons.iconarchive.com/icons/hopstarter/scrap/48/Magnifying-Glass-icon.png">
         </button>
-        <form ng-show='searchOn'>
-            <table style='width:100%;'>
-            <td>
-            <div style="font-size: x-large; color: #ffffff; font-family: calibri,serif;">
-            <input type="radio" name="searchCategory" value="s_horse" checked> Horse
-            <input type="radio" name="searchCategory" value="s_vaccine"> Vaccine
-            <input type="radio" name="searchCategory" value="s_training"> Training
-            <div><input type="text" placeholder="Search for items" class="input" ng-keydown="checkKeyDown($event)" ng-keyup="checkKeyUp($event)" ng-model="searchText" ng-change="search()" style="color:black;" name="horseSearch" autocomplete="off"/></div>
-            <div>
-                <ul class="suggestions-list" ng-show="searchText.length">
-                    <li ng-repeat="suggestion in searchCategory | filter:searchText | limitTo:5" ng-class="{active : selectedIndex === $index}" ng-click="AssignValueAndHide(suggestion.name)">{{suggestion.name}}</li>
-                </ul>
-            </div>    
-            </div>
-            </td>
-                
-            <td>
-            <div class="btn-group-vertical btn-block">
-                <button type='submit' class='btn btn-primary btn-lg' style="margin-top:5px;" ng-click="toWindowForSearch(searchText)">View Profile
-                </button>
-                <button ng-click='toggleSearch()' class='btn btn-primary btn-lg' style="margin-top:5px;">Cancel  
-                </button>
-            </div>
-            </td>
-            </table>
-          </form>
-<!--
+    </aside>
     <div ng-controller="fileUploadController">
         <input id="myInput" onchange="angular.element(this).scope().generateReport(event)" type="file" style="visibility:hidden" />
-        <button type="button" class="btn btn-primary btn-lg"  onclick="$('#myInput').click();" id="file_select" name="file_select" >Import</button>
+        
+		<button type="button" class="btn btn-primary btn-lg" onclick="location.href='/auctionPrices.html'">Financial Report</button>
+		<button type="button" class="btn btn-primary btn-lg"  onclick="$('#myInput').click();" id="file_select" name="file_select" >Import</button>
         <button type="button" class="btn btn-primary btn-lg" ng-click="download();">Export</button>
+        <button type="button" class="btn btn-primary btn-lg" ng-click="openExportModal()" ng-controller="MainPageController">Show Export Queue</button>
         <button type="button" class="btn btn-primary btn-lg" ng-click="wipe();">Clear Export Queue</button>
+        
+        <div id="exportModal" class="modal">
+        <div id="exportModalInterior" class="modal-content">
+            <i><span style="color: #ffffff; font-family: calibri,serif;"><h2>Export Queue</h2></span></i>
+            <span style="color: #ffffff; font-family: calibri,serif;">{{content}}</span>
+            <table ng-hide="content"style="width:100%; color: #ffffff; font-family: calibri,serif; text-algin:center;" frame=void border="1" rules=rows>
+                <thead><tr>
+                    <td><h2>Class</h2></td>
+                    <td><h2>Name</h2></td>
+                    </tr></thead>
+                <tr ng-repeat="eh in ehorses"><td>Horse</td><td>{{eh.name}}</td></tr>
+                <tr ng-repeat="ev in evaccines"><td>Vaccine</td><td>{{ev.name}}</td></tr>
+                <tr ng-repeat="er in eregimens"><td>Training Regimen</td><td>{{er.name}}</td></tr>
+                <tr></tr>
+            </table>
+            <button id="closeExportModal" class="btn btn-primary btn-lg" style="left:50%" ng-click="closeExportModal()">Close</button>
+        </div>
+            
+        </div>
     </div>
--->
     
     <footer>
         Copyright © STABLE Horse Breeding Software

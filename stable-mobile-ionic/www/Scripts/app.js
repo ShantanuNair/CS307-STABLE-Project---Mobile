@@ -43,15 +43,17 @@ app.controller("authenticationCtrl", ["$scope", "Auth", "$firebaseObject",'$wind
                   var userRef = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/");
 //                  var userObj = $firebaseObject(userURL);
                   userRef.child(authData.uid).set({                                                                    //Holy fucking defaults. TODO: Split this up to not make it so huge.            
-                                  "invisibleNode":0                                
+                                  "invisibleNode":0,
+                                  "ExportNum":{"num":0},
+                                  "ExportQueue":{"0":"default"}
                   });
 
-                  $window.location.href = 'MainPage.html';
+                  $window.location.href = '/MainPage.html';
               } 
               else { 
                   /* exists, then do nothing */
 
-                  $window.location.href = 'MainPage.html';
+                  $window.location.href = '/MainPage.html';
               }    
           });
       }
@@ -67,6 +69,12 @@ app.controller('horseDataController', [ '$scope', '$firebaseArray','$firebaseObj
     var authRef = new Firebase("https://blistering-heat-6128.firebaseio.com");
     authDataObj = authRef.getAuth();                                                                                 //Literally death.
     userName = authDataObj.uid;
+    var resetVaccines = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName+ '/vacsToBeAdded';
+    var resetTraining = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName+ '/trainingToBeAdded';
+    var rV = new Firebase(resetVaccines);
+    var rT = new Firebase(resetTraining);
+    rV.set("");
+    rT.set("");
     var url = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName+ '/horses';
     var horses = new Firebase(url);
     $scope.horses = $firebaseArray(horses);
@@ -90,7 +98,7 @@ app.controller('horseDataController', [ '$scope', '$firebaseArray','$firebaseObj
         reader.addEventListener("load", function() {
             dataurl = reader.result;
             output.src = dataurl;
-            console.log(output.src);
+            //console.log(output.src);
         }, false);
     };
     var vaccinesInHorseForm = new Firebase('https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/vaccines');              //Needed to populate vaccubes in horseForm
@@ -127,6 +135,7 @@ app.controller('horseDataController', [ '$scope', '$firebaseArray','$firebaseObj
         authenticatedUsersAdd.set($scope.vaccineList);
         //TODO: Add vacList to createHorse under "vaccines": json key. Format if necessary.
     }
+
     $scope.addTrainingToHorse = function(trainingName) {
         if ($scope.trainingList.indexOf(trainingName) == -1)
             $scope.trainingList.push(trainingName);
@@ -224,110 +233,92 @@ app.controller('horseDataController', [ '$scope', '$firebaseArray','$firebaseObj
         authenticatedUsersAdd.set($scope.vaccineList);
         //TODO: Add vacList to createHorse under "vaccines": json key. Format if necessary.
     }   
-        
+
     $scope.createHorse = function () {
 
         var urlGET = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName);              //Needed to populate vaccubes in horseForm
         
-        var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/vacsToBeAdded");  // get your ref
 
-        // Called once with the initial data and again every time the data changes
-        ref.on("value", function(data) {
-            $scope.vaccineList = data.val();
+        var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName);
+        $scope.cObj = $firebaseObject(ref);
+        $scope.cObj.$loaded().then(function() {
+            $scope.vaccineList = $scope.cObj.vacsToBeAdded;
+            $scope.trainingString = $scope.cObj.trainingToBeAdded;
+            var output = document.getElementById('output');
+            var horse = {
+                "name": $scope.horseName,
+                "gender": $scope.horseGender,
+                "breed": $scope.horseBreed,
+                "weight": $scope.horseWeight,
+                "dob": $scope.horseDOB,
+                "sire": $scope.horseSire,
+                "mare": $scope.horseMare,
+                "price": $scope.horsePrice,
+                "training": $scope.trainingString,
+                "vaccines": $scope.vaccineList,
+    //            "training": $scope.horseTraining,
+                "image": output.src,
+                "notes": $scope.notes
+            };
+            if (typeof horse.name != "string" || typeof horse.name === null) {
+                alert("Please check the name of the horse");
+            }
+            else if (typeof horse.gender != "string" || typeof horse.gender === null) {
+                alert("Please check the gender of the horse");
+            }
+            else if (typeof horse.breed != "string" || typeof horse.breed === null) {
+                alert("Please check the breed of the horse");
+            }
+            else if (typeof horse.weight != "number" || typeof horse.weight === null || horse.weight < 0) {
+                alert("Please check the weight of the horse");
+            }
+            else if (typeof horse.sire != "string" || typeof horse.sire === null) {
+                alert("Please check the sire of the horse");
+            }
+            else if (typeof horse.mare != "string" || typeof horse.mare === null) {
+                alert("Please check the mare of the horse");
+            }
+            else if (typeof horse.price != "number" || typeof horse.price === null || horse.price < 0) {
+                alert("Please check the price of the horse");
+            }
+            else {
+                if (typeof horse.dob === "undefined") {
+                    horse.dob = "";
 
-            var ref2 = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/trainingToBeAdded");
-            ref2.on("value", function(data){
-                $scope.trainingString = data.val();  
-                var output = document.getElementById('output');
-                console.log(output);
-                var horse = {
-                    "name": $scope.horseName,
-                    "gender": $scope.horseGender,
-                    "breed": $scope.horseBreed,
-                    "weight": $scope.horseWeight,
-                    "dob": $scope.horseDOB,
-                    "sire": $scope.horseSire,
-                    "mare": $scope.horseMare,
-                    "price": $scope.horsePrice,
-                    "training": $scope.trainingString,
-                    "vaccines": $scope.vaccineList,
-                    "notes": $scope.notes,
-                    "image": output.src
-                };
-                if (typeof horse.name != "string" || typeof horse.name === null) {
-                    alert("Please check the name of the horse");
                 }
-                else if (typeof horse.gender != "string" || typeof horse.gender === null) {
-                    alert("Please check the gender of the horse");
+                if (typeof horse.vaccines === "undefined") {
+                    horse.vaccines = "";
                 }
-                else if (typeof horse.breed != "string" || typeof horse.breed === null) {
-                    alert("Please check the breed of the horse");
+                if (typeof horse.training === "undefined") {
+                    horse.training = "";
                 }
-                else if (typeof horse.weight != "number" || typeof horse.weight === null || horse.weight < 0) {
-                    alert("Please check the weight of the horse");
+                if (typeof horse.image === "undefined") {
+                    horse.image = "";
                 }
-                else if (typeof horse.sire != "string" || typeof horse.sire === null) {
-                    alert("Please check the sire of the horse");
+                if (horse.image.indexOf(".html") > -1) {
+                    horse.image = "";
                 }
-                else if (typeof horse.mare != "string" || typeof horse.mare === null) {
-                    alert("Please check the mare of the horse");
-                }
-                else if (typeof horse.price != "number" || typeof horse.price === null || horse.price < 0) {
-                    alert("Please check the price of the horse");
-                }
-                else {
-                    if (typeof horse.dob === "undefined") {
-                        horse.dob = "";
-                    }
-                    if (typeof horse.vaccines === "undefined") {
-                        horse.vaccines = "";
-                    }
-                    if (typeof horse.training === "undefined") {
-                        horse.training = "";
-                    }
-                    if (typeof horse.image === "undefined") {
-                        horse.image = "";
-                    }
-
-
-                    var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses/' + horse.name;
-                    var authenticatedUsersAdd = new Firebase(urlAdd);
-                    authenticatedUsersAdd.set({
-                        name:horse.name,
-                        gender:horse.gender,
-                        breed:horse.breed,
-                        weight:horse.weight,
-                        dob:horse.dob,
-                        sire:horse.sire,
-                        mare:horse.mare,
-                        auctionPrice:horse.price,
-                        notes:horse.notes,
-                        training:horse.training,
-                        vaccines:horse.vaccines,
-                        image:horse.image
-                    });
-                    $window.location.href = 'horseDatabase.html';
-                }
-            }); 
+                var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses/' + horse.name;
+                var authenticatedUsersAdd = new Firebase(urlAdd);
+                authenticatedUsersAdd.set({
+                    name:horse.name,
+                    gender:horse.gender,
+                    breed:horse.breed,
+                    weight:horse.weight,
+                    dob:horse.dob,
+                    sire:horse.sire,
+                    mare:horse.mare,
+                    auctionPrice:horse.price,
+                    notes:horse.notes,
+                    training:horse.training,
+                    vaccines:horse.vaccines,
+                    image:horse.image
+                });
+                //$scope.resetFields();
+                $window.location.href = '/horseDatabase.html';
+            }
         });
     };
-/*    
-    function handleFileSelect(evt) {
-        var f = evt.target.files[0];
-        var reader = new FileReader();
-        reader.onload = (function(file) {
-            return function(e) {
-                var fPayload = e.target.result;
-                var f = new Firebase('https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/horses/' + horse.name + '/image');
-                f.set(fPayload, function() {
-                    document.getElementById("output").src = e.target.result;
-                    window.location.hash = fPayload;
-                });
-            };
-        })(f);
-        reader.readAsDataUrl(f);
-    }
-*/
 }]);
 
 app.controller('vaccineFormController', [ '$scope', '$firebaseArray',"Auth", '$http', '$window', function ($scope, $firebaseArray, Auth, $http, $window) {
@@ -368,7 +359,7 @@ app.controller('vaccineFormController', [ '$scope', '$firebaseArray',"Auth", '$h
             var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName+'/vaccines/' + vaccine.name;
             var vaccinesAdd = new Firebase(urlAdd);
             vaccinesAdd.set(vaccine);
-            $window.location.href = 'vaccineDatabase.html';
+            $window.location.href = '/vaccineDatabase.html';
         }
 
     };
@@ -416,7 +407,7 @@ app.controller('trainingFormController', [ '$scope', '$firebaseArray', '$http', 
             var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName+ '/regimens/' + regimen.name;
             var regimensAdd = new Firebase(urlAdd);
             regimensAdd.set(regimen);
-            $window.location.href = 'trainingDatabase.html';
+            $window.location.href = '/trainingDatabase.html';
         }
 
 
@@ -424,11 +415,59 @@ app.controller('trainingFormController', [ '$scope', '$firebaseArray', '$http', 
 }]);
 
 
-app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$window', 'Auth', function ($scope, $firebaseArray, $http, $window, Auth) {
+app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$window', '$firebaseObject', 'Auth', function ($scope, $firebaseArray, $http, $window, $firebaseObject, Auth) {
         $scope.auth = Auth;
         var authRef = new Firebase("https://blistering-heat-6128.firebaseio.com");
         authDataObj = authRef.getAuth();                                                                                 //Literally    death.
         userName = authDataObj.uid;
+    
+        /*
+        $window.onclick = function(event) {
+            var exportModal = document.getElementById("exportModal");
+            console.log(event.target);
+            if (event.target != exportModal) {
+                exportModal.style.display = "none";
+            }
+        };
+        */
+        $scope.openExportModal = function() {
+            var modal = document.getElementById("exportModal");
+            modal.style.display= "block";
+        };
+        $scope.closeExportModal = function() {
+            var modal = document.getElementById("exportModal");
+            modal.style.display= "none";
+        };
+    
+        var Eref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/ExportQueue");
+        $scope.returnedObj = $firebaseObject(Eref);
+        $scope.returnedObj.$loaded().then(function() {
+            $scope.ehorses = [];
+            $scope.evaccines = [];
+            $scope.eregimens = [];
+            if (typeof $scope.returnedObj[0] === "string") {
+                document.getElementById("exportModalInterior").innerHTML = "<i><span style='color: #ffffff; font-family: calibri,serif;'><h2>Export Queue</h2></span></i><span style='color: #ffffff; font-family: calibri,serif;'>Export Queue is Empty</span><br><br><button  id='closeExportModal' class='btn btn-primary btn-lg' style='left:50%' onclick=\"getElementById('exportModal').style.display='none'\">Close</button>";
+                return;
+            }
+            else {
+            for (var i = 0; typeof $scope.returnedObj[i] != "undefined"; i++) {
+                if (typeof $scope.returnedObj[i].gender != "undefined") {
+                    $scope.ehorses.push($scope.returnedObj[i]);
+                }
+                else if (typeof $scope.returnedObj[i].seller != "undefined") {
+                    $scope.evaccines.push($scope.returnedObj[i]);
+                }
+                else {
+                    $scope.eregimens.push($scope.returnedObj[i]);
+                }
+            }
+            //console.log($scope.ehorses);
+            //console.log($scope.evaccines);
+            //console.log($scope.eregimens);
+            }
+        });
+        
+
 
         //Firebase.enableLogging(debugMode);	
         var urlH = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/horses';
@@ -449,7 +488,7 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
             var request = new Firebase(reqUrl);
 
             request.set(name);
-            $window.location.href = 'horseProfile.html';
+            $window.location.href = '/horseProfile.html';
         }
         var d = new Date();
         $scope.date = d;
@@ -465,35 +504,35 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
         
         var OnCompleteHorse = function(error) {
             if (error) {
-                console.log("Search Not Found");
+                //console.log("Search Not Found");
                 alert("The name you entered could not be found. Please try another name.");
             }
             else {
-                console.log("Search Found");
-//                $window.location.href = 'horseProfile.html';
+                //console.log("Search Found");
+//                $window.location.href = '/horseProfile.html';
             }
         }
         
         var OnCompleteVaccine = function(error) {
             if (error) {
-                console.log("Search Not Found");
+                //console.log("Search Not Found");
             } else {
-                console.log("Search Found");
-//                $window.location.href = 'vaccineProfile.html';
+                //console.log("Search Found");
+//                $window.location.href = '/vaccineProfile.html';
             }
         }
         
         var OnCompleteRegimen = function(error) {
             if (error) {
-                console.log("Search Not Found");
+                //console.log("Search Not Found");
             } else {
                 console.log("Search Found");
-//                $window.location.href = 'trainingProfile.html';
+//                $window.location.href = '/trainingProfile.html';
             }
         }
     
         $scope.toWindowForSearch = function(name) {
-            console.log(name);
+            //console.log(name);
             if (typeof name != 'undefined') {
         	 var category;
             	for (var i = 0; i < document.getElementsByName("searchCategory").length; i++) {
@@ -529,7 +568,7 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
                     var request = new Firebase(reqUrl);
 
                     request.set(name, OnCompleteHorse);
-        	        $window.location.href = 'horseProfile.html';
+        	        $window.location.href = '/horseProfile.html';
                 }
                 else if (category === "s_vaccine") {
                     var count = 0;
@@ -552,7 +591,7 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
                     var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/VaccineEditRequests/one';
                     var request1 = new Firebase(reqUrl1);
                     request1.set(name);
-        	        $window.location.href = 'vaccineProfile.html';
+        	        $window.location.href = '/vaccineProfile.html';
                 }
                 else if (category === "s_training") {
                     var count = 0;
@@ -575,7 +614,7 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
                     var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/TrainingRequests/one';
                     var request1 = new Firebase(reqUrl1);
                     request1.set(name);
-        	        $window.location.href = 'trainingProfile.html';
+        	        $window.location.href = '/trainingProfile.html';
                 }
 	       }
         };
@@ -584,29 +623,29 @@ app.controller('MainPageController', [ '$scope', '$firebaseArray', '$http', '$wi
      var month = days[d.getMonth()];
      $scope.date = month + " " + d.getDate() + ", " + d.getFullYear();
      $scope.newHorse = function() {
-         $window.location.href = 'horseForm.html';
+         $window.location.href = '/horseForm.html';
      };
      $scope.newVaccine = function() {
-         $window.location.href = 'vaccineForm.html';
+         $window.location.href = '/vaccineForm.html';
      };
      $scope.newTraining = function() {
-         $window.location.href = 'trainingForm.html';
+         $window.location.href = '/trainingForm.html';
      };
      $scope.horseDatabase = function() {
-         $window.location.href = 'horseDatabase.html';
+         $window.location.href = '/horseDatabase.html';
      };
      $scope.vaccineDatabase = function() {
-         $window.location.href = 'vaccineDatabase.html';
+         $window.location.href = '/vaccineDatabase.html';
      };
      $scope.trainingDatabase = function() {
-         $window.location.href = 'trainingDatabase.html';
+         $window.location.href = '/trainingDatabase.html';
      };
      $scope.calendarPage = function() {
-         $window.location.href = 'calendarPage.html';
+         $window.location.href = '/calendarPage.html';
      };
      $scope.logout = function() {
          $scope.auth.$unauth();
-         $window.location.href = 'login.html';
+         $window.location.href = '/login.html';
      };
       $scope.search = function(){
         var category;
@@ -656,22 +695,22 @@ app.controller('HorseController', ['$scope', '$firebaseArray', '$window', '$http
     var ref = new Firebase(reqUrl);
     $scope.returnedObj = $firebaseObject(ref);
     $scope.returnedObj.$loaded().then(function () {
-        console.log("loaded");
+        //console.log("loaded");
         $scope.searchName = $scope.returnedObj.one;
         var url = "https://blistering-heat-6128.firebaseio.com/Users/" + userName + "/horses/" + $scope.searchName;
         var ref2 = new Firebase(url);
         $scope.secondObj = $firebaseObject(ref2);
         $scope.secondObj.$loaded().then(function () {
             $scope.params = $scope.secondObj;
-            console.log($scope.params.image);
-            
-            var imageTag = document.getElementById("img");
+            if (typeof $scope.params.image == "undefined") {
+                $scope.params.image = "http://www.aspneter.com/aspneter/wp-content/uploads/2016/01/no-thumb.jpg";
+            }
+            if ($scope.params.image.localeCompare("") == 0) {
+                $scope.params.image = "http://www.aspneter.com/aspneter/wp-content/uploads/2016/01/no-thumb.jpg";
+            }
+             var imageTag = document.getElementById("img");
             imageTag.src = $scope.params.image;
-            
-            //var reader = new FileReader();
-            //reader.readAsDataURL($scope.params.image);
-
-            var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/HorseRequests/one';
+            var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/Requests/one';
             var request = new Firebase(reqUrl);
             request.set($scope.searchName);
             var element = document.getElementById("information");
@@ -722,13 +761,13 @@ app.controller('HorseController', ['$scope', '$firebaseArray', '$window', '$http
         var request = new Firebase(reqUrl);
         request.set(name);
 
-        $window.location.href = 'trainingProfile.html';
+        $window.location.href = '/trainingProfile.html';
     }
     $scope.goToVaccine = function(name) {
         var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/VaccineRequests/one';
         var request = new Firebase(reqUrl);
         request.set(name);
-        $window.location.href = 'vaccineProfile.html';
+        $window.location.href = '/vaccineProfile.html';
     }
     $scope.openModal = function() {
         var modal = document.getElementById("vaccineModal");
@@ -755,21 +794,24 @@ app.controller('HorseController', ['$scope', '$firebaseArray', '$window', '$http
         modal.style.display= "none";
     }
     $scope.removeHorse = function() {
-        alert("Horse Removed!");
+        //alert("Horse Removed!");
+        if (!confirm("Are you sure you want to remove this horse permanently?")) {
+            return;   
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses/';
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child($scope.searchName).remove(function(response) {
-            $window.location.href = 'horseDatabase.html';
+            $window.location.href = '/horseDatabase.html';
         });
     }
     $scope.edit = function() {
-        $window.location.href = 'editHorse.html';
+        $window.location.href = '/editHorse.html';
     };
     $scope.toDatabase = function() {
-        $window.location.href = 'horseDatabase.html';
+        $window.location.href = '/horseDatabase.html';
     };
     $scope.mainPage = function() {
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     }
     
 }]);
@@ -777,13 +819,13 @@ app.controller('HorseController', ['$scope', '$firebaseArray', '$window', '$http
 app.controller('CalendarController', ['$scope', '$firebaseArray', '$window', '$http',function($scope, $firebaseArray, $window, $http) {
     //Firebase.enableLogging(debugMode);
     $scope.edit = function() {
-        $window.location.href = 'editHorse.html';
+        $window.location.href = '/editHorse.html';
     };
     $scope.addEvent = function() {
         alert("Event Added!");
     };
     $scope.mainPage = function() {
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     }
     
 }]);
@@ -802,29 +844,30 @@ app.controller('HorseCtrl', ['$scope', '$firebaseArray', '$window', '$http','$fi
     $scope.horses = $firebaseArray(myHorses);
     $scope.back = function() {
 
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     };
     $scope.showForm = function(){
-        $window.location.href = 'horseForm.html';
+        $window.location.href = '/horseForm.html';
     };
 
     $scope.hideForm = function() {
         $scope.addFormShow = false;
     };
     $scope.edit = function(name) {
-        
+        console.log(name);
         var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/Requests/one';
         var request = new Firebase(reqUrl);
         request.set(name);
-        $window.location.href = 'editHorse.html';
+        $window.location.href = '/editHorse.html';
     };
     $scope.goToHorseProfile = function(name) {
+        console.log(name);
         var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/HorseRequests/one';        //TESTING auth support
-        console.log(reqUrl1);
+        //console.log(reqUrl1);
         var request1 = new Firebase(reqUrl1);
         request1.set(name);
 
-        $window.location.href = 'horseProfile.html';
+        $window.location.href = '/horseProfile.html';
     };
     function clearForm(){
         $scope.name='';
@@ -838,6 +881,284 @@ app.controller('HorseCtrl', ['$scope', '$firebaseArray', '$window', '$http','$fi
     };
     $scope.removeHorse = function(horse) {
         //var urlAdd = 'https://blistering-heat-6128.firebaseio.com/horses/';
+        if (!confirm("Are you sure you want to remove this horse permanently?")) {
+            return;   
+        }
+        var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName +'/horses/';                          //TESTING auth support
+        var authenticatedUsersAdd = new Firebase(urlAdd);
+        authenticatedUsersAdd.child(horse.name).remove(function(response) {
+            //$window.location.href = '/horseDatabase.html';
+        });
+    }
+    $scope.addToQueue = function(name) {
+        //var url = "https://blistering-heat-6128.firebaseio.com/horses/" + name + ".json";
+        var url = "https://blistering-heat-6128.firebaseio.com/Users/" +userName+ "/horses/" + name;                            //TESTING auth support
+        var ref = new Firebase(url);
+        $scope.returnedObj = $firebaseObject(ref);
+        $scope.returnedObj.$loaded().then(function () {
+            if (typeof $scope.returnedObj.image === "undefined") {
+                var horse = {
+                    "name": $scope.returnedObj.name,
+                    "gender": $scope.returnedObj.gender,
+                    "breed": $scope.returnedObj.breed,
+                    "weight": $scope.returnedObj.weight,
+                    "dob": $scope.returnedObj.dob,
+                    "sire": $scope.returnedObj.sire,
+                    "mare": $scope.returnedObj.mare,
+                    "auctionPrice": $scope.returnedObj.auctionPrice,
+                    "notes": $scope.returnedObj.notes,
+                    "vaccines": $scope.returnedObj.vaccines,
+                    "training": $scope.returnedObj.training
+                };
+            }
+            else {
+                var horse = {
+                    "name": $scope.returnedObj.name,
+                    "gender": $scope.returnedObj.gender,
+                    "breed": $scope.returnedObj.breed,
+                    "weight": $scope.returnedObj.weight,
+                    "dob": $scope.returnedObj.dob,
+                    "sire": $scope.returnedObj.sire,
+                    "mare": $scope.returnedObj.mare,
+                    "auctionPrice": $scope.returnedObj.auctionPrice,
+                    "notes": $scope.returnedObj.notes,
+                    "vaccines": $scope.returnedObj.vaccines,
+                    "image": $scope.returnedObj.image,
+                    "training": $scope.returnedObj.training
+                };
+            }
+            
+
+            var numUrl = "https://blistering-heat-6128.firebaseio.com/Users/" +userName+ "/ExportNum";                                  //TESTING auth support
+            var ref2 = new Firebase(numUrl);
+            $scope.secondObj = $firebaseObject(ref2);
+            $scope.secondObj.$loaded().then(function() {
+                $scope.num = $scope.secondObj.num;
+                var addUrl = "https://blistering-heat-6128.firebaseio.com/Users/" +userName+ "/ExportQueue/" + $scope.num;                  //TESTING auth support
+                var queueAdd = new Firebase(addUrl);
+                queueAdd.set(horse);
+
+                $scope.num += 1;
+                //var numberUrl = "https://blistering-heat-6128.firebaseio.com/ExportNum/num";
+                var numberUrl = "https://blistering-heat-6128.firebaseio.com/Users/" +userName+ "/ExportNum/num";                                          //TESTING auth support
+                var updateNum = new Firebase(numberUrl);
+                updateNum.set($scope.num);
+                alert("Horse Added!");
+            });
+        });
+
+    }
+
+
+}]);
+
+app.controller('PriceController', ['$scope', '$firebaseArray', '$window', '$http','$firebaseObject', 'Auth',function($scope, $firebaseArray, $window, $http,$firebaseObject, Auth) {
+//Firebase.enableLogging(true);
+    
+    var authRef = new Firebase("https://blistering-heat-6128.firebaseio.com");
+    authDataObj = authRef.getAuth();                                                                                 //Literally death.
+    userName = authDataObj.uid;
+
+    
+    //var myHorses = new Firebase('https://blistering-heat-6128.firebaseio.com/horses');                                             //Enable to use single user mode.
+	var myVaccines = new Firebase('https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/vaccines');
+    $scope.vaccines = $firebaseArray(myVaccines);
+	
+    var myHorses = new Firebase('https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/horses');         //TESTING auth suport
+    
+    $scope.horses = $firebaseArray(myHorses);
+    $scope.back = function() {
+
+        $window.location.href = '/MainPage.html';
+    };
+    $scope.showForm = function(){
+        $window.location.href = '/horseForm.html';
+    };
+
+    $scope.hideForm = function() {
+        $scope.addFormShow = false;
+    };
+	
+	$scope.total = function() {
+		var total = 0;
+		for(var i = 0; i < $scope.horses.length; i++){
+			var product = $scope.horses[i];
+            if (typeof product.auctionPrice === "string") {
+                total += parseInt(product.auctionPrice);
+            }
+            else {
+                total += product.auctionPrice;
+            }
+		}
+		return total;
+	}
+	
+	$scope.horseTotal = function(name) {
+		var total = 0;
+		for(var i = 0; i < $scope.horses.length; i++){
+			if ($scope.horses[i].name == name) {
+				var product = $scope.horses[i];
+				var vac1 = product.vaccines.split("|");
+				for (var j = 0; j < $scope.vaccines.length; j++) {
+					for (var k = 0; k < vac1.length; k++) {
+						if (vac1[k] == $scope.vaccines[j].name) {
+							//console.log($scope.vaccines[j].name);
+							//console.log($scope.vaccines[j].price);
+							if (typeof $scope.vaccines[j].price === "string") {
+								total += parseInt($scope.vaccines[j].price);
+							}
+							else {
+								total += $scope.vaccines[j].price;
+							}
+						}
+					}
+				}
+			}
+		}
+		return total;
+	}
+	
+	$scope.vaccineTotal = function() {
+		var total = 0;
+		for(var i = 0; i < $scope.horses.length; i++){
+			var product = $scope.horses[i];
+			var vac1 = product.vaccines.split("|");
+			for (var j = 0; j < $scope.vaccines.length; j++) {
+				for (var k = 0; k < vac1.length; k++) {
+					if (vac1[k] == $scope.vaccines[j].name) {
+						if (typeof $scope.vaccines[j].price === "string") {
+							total += parseInt($scope.vaccines[j].price);
+						}
+						else {
+							total += $scope.vaccines[j].price;
+						}
+					}
+				}
+			}
+		}
+		return total;
+	}
+	
+	$scope.createExcelSheet = function() {
+		var array = [];
+		for (var i = 0; i < $scope.horses.length; i++) {
+			array.push({
+				"Name": $scope.horses[i].name,
+				"Auction Price": "$" + $scope.horses[i].auctionPrice,
+				"Expenditures": "$" + $scope.horseTotal($scope.horses[i].name)
+			});
+		}
+		var j = JSON.stringify(array);
+		JSONToCSVConvertor(j, "Financial Report", true);
+	}
+	
+	function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+    //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+    
+    var CSV = '';    
+    //Set Report title in first row or line
+    
+    CSV += ReportTitle + '\r\n\n';
+
+    //This condition will generate the Label/Header
+    if (ShowLabel) {
+        var row = "";
+        
+        //This loop will extract the label from 1st index of on array
+        for (var index in arrData[0]) {
+            
+            //Now convert each value to string and comma-seprated
+            row += index + ',';
+        }
+
+        row = row.slice(0, -1);
+        
+        //append Label row with line break
+        CSV += row + '\r\n';
+    }
+    
+    //1st loop is to extract each row
+    for (var i = 0; i < arrData.length; i++) {
+        var row = "";
+        
+        //2nd loop will extract each column and convert it in string comma-seprated
+        for (var index in arrData[i]) {
+            row += '"' + arrData[i][index] + '",';
+        }
+
+        row.slice(0, row.length - 1);
+        
+        //add a line break after each row
+        CSV += row + '\r\n';
+    }
+	
+	CSV += "TOTAL:" + ",$" + $scope.total() + ",$" + $scope.vaccineTotal() + '\r\n';
+	console.log(CSV);
+
+    if (CSV == '') {        
+        alert("Invalid data");
+        return;
+    }   
+    
+    //Generate a file name
+    var fileName = "";
+    //this will remove the blank-spaces from the title and replace it with an underscore
+    fileName += ReportTitle.replace(/ /g,"_");   
+    
+    //Initialize file format you want csv or xls
+    var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+    
+    // Now the little tricky part.
+    // you can use either>> window.open(uri);
+    // but this will not work in some browsers
+    // or you will not get the correct file extension    
+    
+    //this trick will generate a temp <a /> tag
+    var link = document.createElement("a");    
+    link.href = uri;
+    
+    //set the visibility hidden so it will not effect on your web-layout
+    link.style = "visibility:hidden";
+    link.download = fileName + ".csv";
+    
+    //this part will append the anchor tag and remove it after automatic click
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+	
+	
+    $scope.edit = function(name) {
+        
+        var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/Requests/one';
+        var request = new Firebase(reqUrl);
+        request.set(name);
+        $window.location.href = '/editHorse.html';
+    };
+    $scope.goToHorseProfile = function(name) {
+        var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/HorseRequests/one';        //TESTING auth support
+        console.log(reqUrl1);
+        var request1 = new Firebase(reqUrl1);
+        request1.set(name);
+
+        $window.location.href = '/horseProfile.html';
+    };
+    function clearForm(){
+        $scope.name='';
+        $scope.gender='';
+        $scope.breed='';
+        $scope.weight='';
+        $scope.dob='';
+        $scope.sire='';
+        $scope.mare='';
+        $scope.auctionPrice='';
+    };
+    $scope.removeHorse = function(horse) {
+        //var urlAdd = 'https://blistering-heat-6128.firebaseio.com/horses/';
+        if (!confirm("Are you sure you want to remove this horse permanently?")) {
+            return;   
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName +'/horses/';                          //TESTING auth support
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child(horse.name).remove(function(response) {
@@ -861,7 +1182,8 @@ app.controller('HorseCtrl', ['$scope', '$firebaseArray', '$window', '$http','$fi
                     "mare": $scope.returnedObj.mare,
                     "auctionPrice": $scope.returnedObj.auctionPrice,
                     "notes": $scope.returnedObj.notes,
-                    "vaccines": $scope.returnedObj.vaccines
+                    "vaccines": $scope.returnedObj.vaccines,
+                    "image": $scope.returnedObj.image,
             };
 
             var numUrl = "https://blistering-heat-6128.firebaseio.com/Users/" +userName+ "/ExportNum";                                  //TESTING auth support
@@ -901,22 +1223,25 @@ app.controller('vaccineDatabaseCtrl', ['$scope', '$firebaseArray', '$window', '$
     $scope.vaccines = $firebaseArray(myVaccines);
 
     $scope.addVaccine =function() {
-        $window.location.href = 'vaccineForm.html';
+        $window.location.href = '/vaccineForm.html';
     };
     $scope.edit = function(name) {
         var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/VaccineEditRequests/one';
         var request1 = new Firebase(reqUrl1);
         request1.set(name);
-        $window.location.href = 'editVaccine.html';
+        $window.location.href = '/editVaccine.html';
     };
     $scope.goToVaccProfile = function(name){
         var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/VaccineRequests/one';
         var request = new Firebase(reqUrl);
         request.set(name);
-        $window.location.href = 'vaccineProfile.html';
+        $window.location.href = '/vaccineProfile.html';
     }
     $scope.removeVaccine = function(vaccine) {
         //var urlAdd = 'https://blistering-heat-6128.firebaseio.com/vaccines/';
+        if (!confirm("Are you sure you want to remove this vaccine permanently?")) {
+            return;   
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/vaccines/';
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child(vaccine.name).remove(function(response) {
@@ -925,10 +1250,10 @@ app.controller('vaccineDatabaseCtrl', ['$scope', '$firebaseArray', '$window', '$
         //
     }
     $scope.addVaccine = function(){
-        $window.location.href = 'vaccineForm.html';
+        $window.location.href = '/vaccineForm.html';
     }
     $scope.back = function() {
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     }
     $scope.addToQueue = function(name) {
         var url = "https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/vaccines/" + name;
@@ -987,22 +1312,25 @@ app.controller('VaccineProfileController', ['$scope', '$firebaseArray','Auth', '
 
     $scope.removeVaccine = function() {
         
-        alert("Vaccine Removed!");
+        //alert("Vaccine Removed!");
+        if (!confirm("Are you sure you want to remove this vaccine permanently?")) {
+            return;   
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/vaccines/';
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child($scope.searchName).remove(function(response) {
-            $window.location.href = 'vaccineDatabase.html';
+            $window.location.href = '/vaccineDatabase.html';
         });
         //
     }
     $scope.edit = function() {
-        $window.location.href = 'editVaccine.html';  
+        $window.location.href = '/editVaccine.html';  
     };
     $scope.toDatabase = function() {
-        $window.location.href = 'vaccineDatabase.html';
+        $window.location.href = '/vaccineDatabase.html';
     };
     $scope.mainPage = function() {
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     }
     
 }]);
@@ -1016,8 +1344,30 @@ app.controller('horseEditController', [ '$scope', '$firebaseArray','Auth', '$htt
     var url = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses';
     var horses = new Firebase(url);
     $scope.horses = $firebaseArray(horses);
+    $scope.loadFile = function () {
+        var output = document.getElementById('output');
+        var d = document.querySelector('input[type=file]').files[0];
+        var reader = new FileReader();
+        var dataurl;
+        reader.readAsDataURL(d);
+        reader.addEventListener("load", function() {
+            dataurl = reader.result;
+            output.src = dataurl;
+        }, false);
+    };
+    $scope.showSpan = 0;
+    $scope.show = function() {
+        return $scope.showSpan;
+    };
+    $scope.initial = function(image) {
+        console.log(image);
+        var output = document.getElementById('output');
+        output.src = image;
+       if (image.length > 0) {
+            $scope.showSpan = 1;
+        }
+    };
     $window.onclick = function(event) {
-        
         var modal = document.getElementById("vaccineModal");
         var trainingModal = document.getElementById("trainingModal");
         var interior = document.getElementById("vaccineModalInterior");
@@ -1158,14 +1508,14 @@ app.controller('horseEditController', [ '$scope', '$firebaseArray','Auth', '$htt
         modal.style.display= "none";
     }
     
-    var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/HorseRequests")
+    var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/Requests")
     $scope.returnedObj = $firebaseObject(ref);
     $scope.returnedObj.$loaded().then(function () {
 
         $scope.searchName = $scope.returnedObj.one;
 
         var url = "https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/horses/" + $scope.searchName;
-        var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/Requests/one';
+        var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/HorseRequests/one';
         var request = new Firebase(reqUrl);
 
         request.set($scope.searchName);
@@ -1201,6 +1551,13 @@ app.controller('horseEditController', [ '$scope', '$firebaseArray','Auth', '$htt
             $scope.vacList =$scope.vaccineList.split("|");
             $scope.trainingString = $scope.params.training;
             $scope.trainingList = $scope.trainingString.split("|");
+            $scope.initial($scope.params.image);
+            var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/vacsToBeAdded';
+            var authenticatedUsersAdd = new Firebase(urlAdd);
+            authenticatedUsersAdd.set($scope.vaccineList);
+            var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/trainingToBeAdded';
+            var authenticatedUsersAdd = new Firebase(urlAdd);
+            authenticatedUsersAdd.set($scope.trainingString);
             /*
             var reader = new FileReader();
             console.log($scope.params.image);
@@ -1234,82 +1591,100 @@ app.controller('horseEditController', [ '$scope', '$firebaseArray','Auth', '$htt
             list.innerHTML += "</tbody></table>";
         });
     });
-    
+    $scope.$watch('document.getElementById("output").src', function() {
+        if (document.getElementById("output").src != "") {
+            $scope.horseImageSrc = document.getElementById("output").src;
+        }
+        
+    });
     $scope.createHorse = function () {
         var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/vacsToBeAdded");
-        ref.on("value", function(data) {
-            $scope.vaccineList = data.val();
-            var ref2 = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/trainingToBeAdded");
-            ref2.on("value", function(data) {
-                $scope.trainingString = data.val();
-                var horse = {
-                    "name": $scope.horseName,
-                    "gender": $scope.horseGender,
-                    "breed": $scope.horseBreed,
-                    "weight": $scope.horseWeight,
-                    "dob": $scope.horseDOB,
-                    "sire": $scope.horseSire,
-                    "mare": $scope.horseMare,
-                    "price": $scope.horsePrice,
-                    "training": $scope.trainingString,
-                    "vaccines": $scope.vaccineList,
-        //            "training": $scope.horseTraining,
-        //            "image": $scope.horseImage,
-                    "notes": $scope.notes
-                };
-                if (typeof horse.name != "string" || typeof horse.name === null) {
-                    alert("Please check the name of the horse");
-                }
-                else if (typeof horse.gender != "string" || typeof horse.gender === null) {
-                    alert("Please check the gender of the horse");
-                }
-                else if (typeof horse.breed != "string" || typeof horse.breed === null) {
-                    alert("Please check the breed of the horse");
-                }
-                else if (typeof horse.weight != "number" || typeof horse.weight === null || horse.weight < 0) {
-                    alert("Please check the weight of the horse");
-                }
-                else if (typeof horse.sire != "string" || typeof horse.sire === null) {
-                    alert("Please check the sire of the horse");
-                }
-                else if (typeof horse.mare != "string" || typeof horse.mare === null) {
-                    alert("Please check the mare of the horse");
-                }
-                else if (typeof horse.price != "number" || typeof horse.price === null || horse.price < 0) {
-                    alert("Please check the price of the horse");
-                }
-                else {
-                    if (typeof horse.dob === "undefined") {
-                        horse.dob = "";
-                    }
-                    if (typeof horse.vaccines === "undefined") {
-                        horse.vaccines = "";
-                    }
-                    if (typeof horse.training === "undefined") {
-                        horse.training = "";
-                    }
-                    if (typeof horse.image === "undefined") {
-                        horse.image = "";
-                    }
+        var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName);
+        var output = document.getElementById('output');
+        $scope.cObj = $firebaseObject(ref);
+        $scope.cObj.$loaded().then(function() {
+            $scope.vaccineList = $scope.cObj.vacsToBeAdded;
+            $scope.trainingString = $scope.cObj.trainingToBeAdded;
+            var horse = {
+                "name": $scope.horseName,
+                "gender": $scope.horseGender,
+                "breed": $scope.horseBreed,
+                "weight": parseInt($scope.horseWeight),
+                "dob": $scope.horseDOB,
+                "sire": $scope.horseSire,
+                "mare": $scope.horseMare,
+                "price": parseInt($scope.horsePrice),
+                "training": $scope.trainingString,
+                "vaccines": $scope.vaccineList,
+                "image": output.src,
+                "notes": $scope.notes
+            };
+            if (typeof horse.name != "string" || typeof horse.name === null) {
+                alert("Please check the name of the horse");
+            }
+            else if (typeof horse.gender != "string" || typeof horse.gender === null) {
+                alert("Please check the gender of the horse");
+            }
+            else if (typeof horse.breed != "string" || typeof horse.breed === null) {
+                alert("Please check the breed of the horse");
+            }
+            else if (typeof horse.weight != "number" || typeof horse.weight === null || horse.weight < 0) {
+                alert("Please check the weight of the horse");
+                console.log(typeof horse.weight);
+                console.log(horse.weight);
+                console.log($scope.horseWeight);
+            }
+            else if (typeof horse.sire != "string" || typeof horse.sire === null) {
+                alert("Please check the sire of the horse");
+            }
+            else if (typeof horse.mare != "string" || typeof horse.mare === null) {
+                alert("Please check the mare of the horse");
+            }
+            else if (typeof horse.price != "number" || typeof horse.price === null || horse.price < 0) {
+                alert("Please check the price of the horse");
+                console.log(typeof horse.price);
+                console.log(horse.price);
+                console.log($scope.horsePrice);
+            }
+            else {
+                if (typeof horse.dob === "undefined") {
+                    horse.dob = "";
 
-                    var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses/' + horse.name;
-                    var authenticatedUsersAdd = new Firebase(urlAdd);
-                    authenticatedUsersAdd.set({
-                        name:horse.name,
-                        gender:horse.gender,
-                        breed:horse.breed,
-                        weight:horse.weight,
-                        dob:horse.dob,
-                        sire:horse.sire,
-                        mare:horse.mare,
-                        auctionPrice:horse.price,
-                        notes:horse.notes,
-                        training:horse.training,
-                        vaccines:horse.vaccines
-                    });
-                    $window.location.href = 'horseProfile.html';
                 }
-            });
+                if (typeof horse.vaccines === "undefined") {
+                    horse.vaccines = "";
+                }
+                if (typeof horse.training === "undefined") {
+                    horse.training = "";
+                }
+                if (typeof horse.notes === "undefined") {
+                    horse.notes = "";
+                }
+                if (typeof horse.image === "undefined") {
+                    horse.image = "";
+                }
+                if (horse.image.indexOf(".html") > -1) {
+                    horse.image = "";
+                }
+                var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/horses/' + horse.name;
+                var authenticatedUsersAdd = new Firebase(urlAdd);
+                authenticatedUsersAdd.set({
+                    name:horse.name,
+                    gender:horse.gender,
+                    breed:horse.breed,
+                    weight:horse.weight,
+                    dob:horse.dob,
+                    sire:horse.sire,
+                    mare:horse.mare,
+                    auctionPrice:horse.price,
+                    notes:horse.notes,
+                    training:horse.training,
+                    vaccines:horse.vaccines,
+                    image:horse.image
+                });
+                //$scope.resetFields();
+                $window.location.href = '/horseProfile.html';
+            }
         });
     }
 }]);
@@ -1327,23 +1702,23 @@ app.controller('TrainingCtrl', ['$scope', '$firebaseArray', '$window', '$http','
     $scope.regimens = $firebaseArray(myHorses);
     $scope.back = function() {
 
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     };
     $scope.addForm = function(){
-        $window.location.href = 'trainingForm.html';
+        $window.location.href = '/trainingForm.html';
     };
     $scope.edit = function(name) {
         var reqUrl1 = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/TrainingRequests/one';
         var request1 = new Firebase(reqUrl1);
         request1.set(name);
-        $window.location.href = 'editTraining.html';
+        $window.location.href = '/editTraining.html';
     };
     $scope.goToRegimeProfile = function(name) {
         var reqUrl = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/TrainingProfileRequests/one';
         var request = new Firebase(reqUrl);
         request.set(name);
 
-        $window.location.href = 'trainingProfile.html';
+        $window.location.href = '/trainingProfile.html';
     };
     function clearForm(){
         $scope.name='';
@@ -1355,6 +1730,9 @@ app.controller('TrainingCtrl', ['$scope', '$firebaseArray', '$window', '$http','
     };
     $scope.removeRegime = function(regime) {
         //var urlAdd = 'https://blistering-heat-6128.firebaseio.com/regimens/';
+        if (!confirm("Are you sure you want to remove this horse permanently?")) {
+            return;   
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' +userName+ '/regimens/';
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child(regime.name).remove(function(response) {
@@ -1417,21 +1795,24 @@ app.controller('RegimeController', ['$scope', '$firebaseArray','Auth', '$window'
 
     });
     $scope.removeRegime = function() {
-        alert("Regime Removed!");
+        //alert("Regime Removed!");
+        if (!confirm("Are you sure you want to remove this training regimen permanently?")) {
+            return;
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/regimens/';
         var authenticatedUsersAdd = new Firebase(urlAdd);
         authenticatedUsersAdd.child($scope.searchName).remove(function(response) {
-            $window.location.href = 'trainingDatabase.html';
+            $window.location.href = '/trainingDatabase.html';
         });
     }
     $scope.edit = function() {
-        $window.location.href = 'editTraining.html';
+        $window.location.href = '/editTraining.html';
     };
     $scope.toDatabase = function() {
-        $window.location.href = 'trainingDatabase.html';
+        $window.location.href = '/trainingDatabase.html';
     };
     $scope.mainPage = function() {
-        $window.location.href = 'MainPage.html';
+        $window.location.href = '/MainPage.html';
     }
     
 }]);
@@ -1502,7 +1883,7 @@ app.controller('vaccineEditController', [ '$scope', '$firebaseArray','Auth', '$h
             var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/vaccines/' + vaccine.name;
             var vaccinesAdd = new Firebase(urlAdd);
             vaccinesAdd.set(vaccine);
-            $window.location.href = 'vaccineProfile.html';
+            $window.location.href = '/vaccineProfile.html';
         }
 
     };
@@ -1573,7 +1954,7 @@ app.controller('trainingEditController', [ '$scope', '$firebaseArray','Auth', '$
             var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/'+userName+'/regimens/' + regimen.name;
             var regimensAdd = new Firebase(urlAdd);
             regimensAdd.set(regimen);
-            $window.location.href = 'trainingProfile.html';
+            $window.location.href = '/trainingProfile.html';
         }
 
 
@@ -1589,29 +1970,68 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
     authDataObj = authRef.getAuth();                                                                                 //Literally death.
     userName = authDataObj.uid;
     $scope.wipe = function() {
+        $scope.ehorse = [];
+        $scope.evaccines = [];
+        $scope.eregimens = [];
         var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/");
         var numReset = {"num": 0};
         ref.child("ExportNum").set(numReset);
         var reset = {"0": "default"}; 
         ref.child("ExportQueue").set(reset);
         alert("Export Queue Reset!");
-    }
+        document.getElementById("exportModalInterior").innerHTML = "<i><span style='color: #ffffff; font-family: calibri,serif;'><h2>Export Queue</h2></span></i><span style='color: #ffffff; font-family: calibri,serif;'>Export Queue is Empty</span><br><br><button  id='closeExportModal' class='btn btn-primary btn-lg' style='left:50%' onclick=\"getElementById('exportModal').style.display='none'\">Close</button>";
+    };
     $scope.linkDownload = function(a, filename, content) {
         contentType =  'data:application/octet-stream,';
         uriContent = contentType + encodeURIComponent(content);
         a.setAttribute('href', uriContent);
         a.setAttribute('download', filename);
-      }
+      };
+            $scope.openExportModal = function() {
+            var modal = document.getElementById("exportModal");
+            modal.style.display= "block";
+        };
+        $scope.closeExportModal = function() {
+            var modal = document.getElementById("exportModal");
+            modal.style.display= "none";
+        };
+    
+        var Eref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/ExportQueue");
+        $scope.returnedObj = $firebaseObject(Eref);
+        $scope.returnedObj.$loaded().then(function() {
+            $scope.ehorses = [];
+            $scope.evaccines = [];
+            $scope.eregimens = [];
+            if (typeof $scope.returnedObj[0] === "string") {
+               document.getElementById("exportModalInterior").innerHTML = "<i><span style='color: #ffffff; font-family: calibri,serif;'><h2>Export Queue</h2></span></i><span style='color: #ffffff; font-family: calibri,serif;'>Export Queue is Empty</span><br><br><button  id='closeExportModal' class='btn btn-primary btn-lg' style='left:50%' onclick=\"getElementById('exportModal').style.display='none'\">Close</button>";
+                return;
+            }
+            else {
+                for (var i = 0; typeof $scope.returnedObj[i] != "undefined"; i++) {
+                    if (typeof $scope.returnedObj[i].gender != "undefined") {
+                        $scope.ehorses.push($scope.returnedObj[i]);
+                    }
+                    else if (typeof $scope.returnedObj[i].seller != "undefined") {
+                        $scope.evaccines.push($scope.returnedObj[i]);
+                    }
+                    else {
+                        $scope.eregimens.push($scope.returnedObj[i]);
+                    }
+                }
+                console.log($scope.ehorses);
+                console.log($scope.evaccines);
+                console.log($scope.eregimens);
+            }
+        });
     $scope.download = function() {
         var content = "error";
         var ref = new Firebase("https://blistering-heat-6128.firebaseio.com/Users/"+userName+"/ExportQueue");
         $scope.returnedObj = $firebaseObject(ref);
         $scope.returnedObj.$loaded().then(function() {
-            console.log($scope.returnedObj);
             var horses = [];
             var vaccines = [];
             var regimens = [];
-            if ($scope.returnedObj[0].localeCompare("default") == 0) {
+            if (typeof $scope.returnedObj[0] === "string") {
                 alert("Export Queue Empty!");
                 return;
             }
@@ -1627,27 +2047,56 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
                 }
             }
             
-            console.log("horses");
-            console.log(horses);
-            console.log("vaccines");
-            console.log(vaccines);
-            console.log("regimens");
-            console.log(regimens);
+            //console.log("horses");
+            //console.log(horses);
+            //console.log("vaccines");
+            //console.log(vaccines);
+            //console.log("regimens");
+            //console.log(regimens);
             var content = "STABLE IMPORT FILE\r\n\r\n";
             for (var i = 0; i < horses.length; i++) {
                 if (i == 0) {
                     content += "horses\r\n\r\n";
                 }
+                console.log("old");
+                console.log("training: " + horses[i].training + "end");
+                console.log("vaccines: " + horses[i].vaccines + "end");
+                console.log("image: " + horses[i].image + "end");
+                console.log("notes: " + horses[i].notes + "end");
                 if (typeof horses[i].training == "undefined") {
                     horses[i].training = ">";
                 }
                 if (typeof horses[i].vaccines == "undefined") {
                     horses[i].vaccines = ">";
                 }
+                if (typeof horses[i].image == "undefined") {
+                    horses[i].image = ">";
+                }
+                if (typeof horses[i].notes == "undefined") {
+                    horses[i].notes = ">";
+                }
+                if (horses[i].image.localeCompare("") == 0) {
+                    horses[i].image = ">";
+                }
+                if (horses[i].training.localeCompare("") == 0) {
+                    horses[i].training = ">";
+                }
+                if (horses[i].vaccines.localeCompare("") == 0) {
+                    horses[i].vaccines = ">";
+                }
+                if (horses[i].notes.localeCompare("") == 0) {
+                    horses[i].notes = ">";
+                }
+                console.log("new");
+                console.log("training: " + horses[i].training + "end");
+                console.log("vaccines: " + horses[i].vaccines + "end");
+                console.log("image: " + horses[i].image + "end");
+                console.log("notes: " + horses[i].notes + "end");
                 content += horses[i].auctionPrice + "\r\n";
                 content += horses[i].breed + "\r\n";
                 content += horses[i].dob + "\r\n";
                 content += horses[i].gender + "\r\n";
+                content += horses[i].image + "\r\n";
                 content += horses[i].mare + "\r\n";
                 content += horses[i].name + "\r\n";
                 content += horses[i].notes + "\r\n";
@@ -1764,34 +2213,39 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
         var weight = "";
         var training = "";
         var vaccines = "";
+        var image = "";
         var head = 0;
-        //           0             1      2    3       4     5     6      7     8         9         10
-        var array = [auctionPrice, breed, DOB, gender, mare, name, notes, sire, training, vaccines, weight];
+        //           0             1      2    3       4     5     6      7     8     9        10         11
+        var array = [auctionPrice, breed, DOB, gender,image, mare, name, notes, sire, training, vaccines, weight];
         var text = $scope.importData;
         for (var i = ii + 2, len = text.length; i< len; i++) {
             
             if (text[i] == '~') {
                 i += 1;
-                if (array[9].localeCompare(">") == 0) {
+                if (array[10].localeCompare(">") == 0) {
+                    array[10] = "";
+                }
+                if (array[9].localeCompare(">") == 0 ) {
                     array[9] = "";
                 }
-                //console.log(array[8].localeCompare(">"));
-                if (array[8].localeCompare(">") ==0 ) {
-                    array[8] = "";
+                if (array[4].localeCompare(">") == 0 ) {
+                    array[4] = "";
                 }
                 var horse = {
-                    "name": array[5],
+                    "name": array[6],
                     "gender": array[3],
                     "breed": array[1],
-                    "weight": array[10],
+                    "weight": array[11],
                     "dob": array[2],
-                    "sire": array[7],
-                    "mare": array[4],
+                    "sire": array[8],
+                    "mare": array[5],
                     "auctionPrice": array[0],
-                    "notes": array[6],
-                    "vaccines":array[9],
-                    "training":array[8]
+                    "notes": array[7],
+                    "vaccines":array[10],
+                    "training":array[9],
+                    "image":array[4]
                 };
+                console.log(horse);
                 $scope.horse = horse;
                 addHorse(horse);
                 return i;
@@ -1799,27 +2253,31 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
             }
             else if (text[i] == '`') {
                 i += 1;
-                if (array[9].localeCompare(">") == 0) {
+                if (array[10].localeCompare(">") == 0) {
+                    array[10] = "";
+                }
+                if (array[9].localeCompare(">") == 0 ) {
                     array[9] = "";
                 }
-                //console.log(array[8].localeCompare(">"));
-                if (array[8].localeCompare(">") ==0 ) {
-                    array[8] = "";
+                if (array[4].localeCompare(">") == 0 ) {
+                    array[4] = "";
                 }
                 var horse = {
-                    "name": array[5],
+                    "name": array[6],
                     "gender": array[3],
                     "breed": array[1],
-                    "weight": array[10],
+                    "weight": array[11],
                     "dob": array[2],
-                    "sire": array[7],
-                    "mare": array[4],
+                    "sire": array[8],
+                    "mare": array[5],
                     "auctionPrice": array[0],
-                    "notes": array[6],
-                    "vaccines":array[9],
-                    "training":array[8]
+                    "notes": array[7],
+                    "vaccines":array[10],
+                    "training":array[9],
+                    "image":array[4]
                 };
                 $scope.horse = horse;
+                console.log(horse);
                 addHorse(horse);
                 return i;
                 break;
@@ -1834,27 +2292,30 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
                 i+=1;
                 continue;
             }
-            else if (head > 10) {
+            else if (head > 11) {
                 i += 1;
-                if (array[9].localeCompare(">") == 0) {
+                if (array[10].localeCompare(">") == 0) {
+                    array[10] = "";
+                }
+                if (array[9].localeCompare(">") == 0 ) {
                     array[9] = "";
                 }
-                //console.log(array[8].localeCompare(">") + "for horse " + array[5]);
-                if (array[8].localeCompare(">") == 0 ) {
-                    array[8] = "";
+                if (array[4].localeCompare(">") == 0 ) {
+                    array[4] = "";
                 }
                 var horse = {
-                    "name": array[5],
+                    "name": array[6],
                     "gender": array[3],
                     "breed": array[1],
-                    "weight": array[10],
+                    "weight": array[11],
                     "dob": array[2],
-                    "sire": array[7],
-                    "mare": array[4],
+                    "sire": array[8],
+                    "mare": array[5],
                     "auctionPrice": array[0],
-                    "notes": array[6],
-                    "vaccines":array[9],
-                    "training":array[8]
+                    "notes": array[7],
+                    "vaccines":array[10],
+                    "training":array[9],
+                    "image":array[4]
                 };
                 $scope.horse = horse;
                 addHorse(horse);
@@ -1914,7 +2375,7 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
             else if (text[i] == '\r') {
                 head++;
                 i+=1;
-                console.log("the character hit is " + text[i]);
+                //console.log("the character hit is " + text[i]);
                 continue;
             }
             else if (head > 5) {
@@ -2004,7 +2465,18 @@ app.controller('fileUploadController', [ '$scope', '$firebaseArray', '$firebaseO
         var horses = new Firebase(url);
         $scope.horses = $firebaseArray(horses);
         var text = horse.name;
-
+        if (horse.notes.localeCompare(">") == 0) {
+            horse.notes = "";
+        }
+        if (horse.training.localeCompare(">") == 0) {
+            hores.training = "";
+        }
+        if (horse.notes.localeCompare(">") == 0) {
+            hores.vaccines = "";
+        }
+        if (horse.notes.localeCompare(">") == 0) {
+            hores.images = "";
+        }
         var urlAdd = 'https://blistering-heat-6128.firebaseio.com/Users/' + userName + '/horses/' + horse.name;
 
         var authenticatedUsersAdd = new Firebase(urlAdd);
