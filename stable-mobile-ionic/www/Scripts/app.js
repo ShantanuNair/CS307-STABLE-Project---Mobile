@@ -260,7 +260,7 @@ app.controller('horseDataController', [ '$scope', '$firebaseArray','$firebaseObj
                 "image": output.src,
                 "notes": $scope.notes
             };
-            if (typeof horse.name != "string" || typeof horse.name === null) {
+            if (typeof horse.name != "string" || typeof horse.name === null || horse.name.indexOf("/") > -1 ) {
                 alert("Please check the name of the horse");
             }
             else if (typeof horse.gender != "string" || typeof horse.gender === null) {
